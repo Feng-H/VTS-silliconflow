@@ -227,12 +227,40 @@ build_app() {
     
     log_success "Archive created successfully"
     
+    # Create a temporary ExportOptions.plist for Ad-hoc signing if needed
+    local export_plist="scripts/ExportOptions.plist"
+
+    # Check if we are using Ad-hoc signing
+    local signing_identity
+    signing_identity=$(get_signing_identity)
+
+    if [ "$signing_identity" = "-" ]; then
+        log_info "Generating Ad-hoc ExportOptions.plist..."
+        export_plist="build/ExportOptions-AdHoc.plist"
+        cat > "$export_plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>mac-application</string>
+    <key>signingStyle</key>
+    <string>manual</string>
+    <key>stripSwiftSymbols</key>
+    <true/>
+    <key>compileBitcode</key>
+    <false/>
+</dict>
+</plist>
+EOF
+    fi
+
     # Export app
     log_info "Exporting application..."
     if ! xcodebuild \
         -exportArchive \
         -archivePath "build/$APP_NAME.xcarchive" \
-        -exportOptionsPlist scripts/ExportOptions.plist \
+        -exportOptionsPlist "$export_plist" \
         -exportPath build/export \
         $team_args; then
         log_error "Failed to export application"
