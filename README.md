@@ -5,31 +5,6 @@
   <br>
   <strong>等待已久的 macOS 开源语音输入工具！🚀</strong>
 </p>
-
-> **🔊 请打开声音！** 这个演示视频包含音频，展示实时转写体验。
-
-https://github.com/user-attachments/assets/bc77c14b-863c-418f-8564-175d6300ce2b
-
-<p align="center">
-  <strong>🚀 极速响应 · 自带 Key · 光标处直接输入</strong>
-</p>
-
----
-
-<p align="center">
-  <a href="https://github.com/j05u3/VTS/releases/latest">
-    <img src="https://img.shields.io/badge/📦%20下载%20DMG-最新版本-brightgreen?style=for-the-badge&logo=apple&logoColor=white&labelColor=000000&color=007ACC" alt="下载 DMG" width="300">
-  </a>
-</p>
-
-<p align="center">
-  <strong>或者使用 Homebrew 安装：</strong>
-</p>
-
-```bash
-brew install j05u3/tap/voice-typing-studio
-```
-
 ---
 
 利用 **SiliconFlow (硅基流动)** 和 **BigModel (智谱 AI)** 的强大能力，让你的声音瞬间变成文字。告别 macOS 自带听写的限制，体验闪电般快速、精准的转写体验，还支持自定义全局快捷键！⚡️
@@ -71,6 +46,21 @@ brew install j05u3/tap/voice-typing-studio
 - **不存储音频**: 音频实时处理，绝不保存到本地
 - **Key 安全存储**: API Key 存储在 macOS 钥匙串 (Keychain) 中
 - **加密传输**: 所有 API 通信均使用 HTTPS 加密
+
+## ❤️ 致谢与说明
+
+本项目 Fork 自 [j05u3/VTS](https://github.com/j05u3/VTS)，特别感谢原作者的杰出工作！
+
+为了让应用更加轻量和纯净，我在本项目中**移除了**以下模块：
+- **使用调研 (Telemetry)**
+- **升级提醒 (Sparkle Update)**
+
+这使得安装包体积更小，且完全专注于核心功能。
+
+### 参与贡献
+如果你有任何需求或建议，欢迎提交 [Issue](https://github.com/Feng-H/VTS-silliconflow/issues)。
+
+当然，也非常欢迎你 **Fork** 本项目，开始你的 **Vibe Coding**，手搓一个最适合你自己的语音输入工具！
 
 ## 📄 许可证
 
