@@ -333,8 +333,12 @@ create_dmg() {
     # Add DMG signing identity if available (this signs the DMG container, not the app)
     local signing_identity
     if [ "$SKIP_SIGNING" != "true" ] && signing_identity=$(get_signing_identity); then
-        log_info "Will sign DMG container with: $signing_identity"
-        CREATE_DMG_ARGS+=("--identity" "$signing_identity")
+        if [ "$signing_identity" != "-" ]; then
+            log_info "Will sign DMG container with: $signing_identity"
+            CREATE_DMG_ARGS+=("--identity" "$signing_identity")
+        else
+            log_warning "Skipping DMG signing (Ad-hoc identity used for app bundle)"
+        fi
     fi
     
     # Create the DMG
@@ -427,7 +431,15 @@ notarize_dmg() {
         log_info "Skipping notarization (SKIP_SIGNING=true)"
         return
     fi
-    
+
+    # Skip notarization if using Ad-hoc signing
+    local signing_identity
+    signing_identity=$(get_signing_identity)
+    if [ "$signing_identity" = "-" ]; then
+        log_info "Skipping notarization (Ad-hoc signing used)"
+        return
+    fi
+
     log_info "Starting notarization process..."
     
     DMG_NAME=$(cat dmg_name.txt)
