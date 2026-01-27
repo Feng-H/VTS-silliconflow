@@ -50,7 +50,7 @@ brew install j05u3/tap/voice-typing-studio
 
 ---
 
-Transform your voice into text instantly with the power of **OpenAI**, **Groq**, and **Deepgram** APIs. Say goodbye to macOS dictation limitations and hello to lightning-fast, accurate transcription with your own custom hotkeys! ⚡️
+Transform your voice into text instantly with the power of **SiliconFlow** and **BigModel** APIs. Say goodbye to macOS dictation limitations and hello to lightning-fast, accurate transcription with your own custom hotkeys! ⚡️
 
 ## 📋 Table of Contents
 
@@ -59,52 +59,45 @@ Transform your voice into text instantly with the power of **OpenAI**, **Groq**,
 - [Usage Guide](#-usage-guide)
   - [Basic Transcription](#basic-transcription)
   - [Advanced Features](#advanced-features)
-- [Longer Demo](#-longer-demo)
-- [Screenshots](#-screenshots)
 - [Privacy & Security](#-privacy--security)
 - [Troubleshooting](#%EF%B8%8F-troubleshooting)
 - [Development](#%E2%80%8D-development)
   - [Requirements](#development-requirements)
   - [Building from Source](#building-from-source)
   - [Architecture](#architecture)
-  - [Contributing](#contributing)
-- [Roadmap](#%EF%B8%8F-roadmap)
-- [Feedback](#-feedback)
 - [License](#-license)
-- [Acknowledgements](#-acknowledgements)
 
 ## ✨ Why Choose VTS?
 
-- 🤖 **AI-Powered Accuracy**: Leverage OpenAI, Groq, and Deepgram models for superior transcription
+- 🤖 **AI-Powered Accuracy**: Leverage SiliconFlow and BigModel models for superior transcription
 - 🔑 **Your Keys, Your Control**: Bring your own API keys - no subscriptions, no limits
 - 🔄 **Drop-in Replacement**: Works exactly like macOS dictation, but better!
-- ⌨️ **Your Shortcut, Your Rules**: Fully customizable global hotkeys (default: ⌘⇧;)
+- ⌨️ **Push-to-Talk**: Hold **Right Command** (⌘) to record instantly
 - 🎯 **Smart Device Management**: Intelligent microphone priority with seamless fallback
-- 💬 **Context-Aware**: Custom system prompt boosts accuracy for your specific needs  
+- 💬 **Context-Aware**: Custom system prompt boosts accuracy for your specific needs
 - 🔓 **100% Open Source**: Full transparency, community-driven, modify as you wish
 
 ## API Key Setup
 
 After installing VTS, you'll need an API key from one of these providers:
 
-- **OpenAI**: [Get your API key here](https://platform.openai.com/api-keys)
-- **Groq**: [Get your API key here](https://console.groq.com/keys)
-- **Deepgram**: [Get your API key here](https://console.deepgram.com/project/keys)
+- **SiliconFlow**: [Get your API key here](https://cloud.siliconflow.cn/account/ak)
+- **BigModel**: [Get your API key here](https://open.bigmodel.cn/usercenter/apikeys)
 
 *Only one API key is required - choose the provider you prefer!*
 
 **Requirements:**
 - **macOS 14.0+** (Apple Silicon & Intel supported)
-- **API key** from OpenAI, Groq, or Deepgram
+- **API key** from SiliconFlow or BigModel
 
 ## 📖 Usage Guide
 
 ### Basic Transcription
-1. **Choose Provider**: Select OpenAI, Groq, or Deepgram from the dropdown
-2. **Select Model**: Pick whisper-1, whisper-large-v3, or other available models
+1. **Choose Provider**: Select SiliconFlow or BigModel from the dropdown
+2. **Select Model**: Pick available models (e.g., SenseVoiceSmall, glm-4-voice)
 3. **Enter API Key**: Paste your API key in the secure field
-4. **Start Recording**: Press the global hotkey (default: ⌘⇧;) and speak
-5. **View Results**: See real-time transcription inserted into the application you're using
+4. **Start Recording**: Press and **HOLD** the **Right Command** (⌘) key and speak
+5. **View Results**: Release the key to see real-time transcription inserted into the application you're using
 6. **(Optional) Copy**: Use buttons to copy the transcript
 
 ### Advanced Features
@@ -121,28 +114,13 @@ After installing VTS, you'll need an API key from one of these providers:
 - Examples: "Medical terminology", "Technical jargon", "Names: John, Sarah, Mike"
 - Prompts help the AI better understand domain-specific language
 
-## 🎬 Longer Demo
-
-https://github.com/user-attachments/assets/f69c365a-4f1a-42f1-b2de-66d61643fea0
-
-Getting started in 34 seconds:
-
-[![Getting started in 34 seconds](https://img.youtube.com/vi/NTQmVCvkZQQ/0.jpg)](https://www.youtube.com/watch?v=NTQmVCvkZQQ)
-
-
-## 📷 Screenshots
-
-<img width="350" alt="image" src="https://github.com/user-attachments/assets/57fdf28d-120e-4bfb-9dfd-5413e7c65127" /> <img width="350" alt="image" src="https://github.com/user-attachments/assets/d165c874-9df4-41af-b49d-f4220896d699" />
- <img width="350" alt="image" src="https://github.com/user-attachments/assets/b7aacf73-842a-4292-9418-d9fb7df13eee" />
-
-
 ## 🔒 Privacy & Security
 
 - **No audio storage**: Audio is processed in real-time, never stored locally
 - **API keys are safe**: Keys are stored in Keychain
 - **TLS encryption**: All API communication uses HTTPS
 - **Microphone permission**: Explicit user consent required for audio access
-- **Basic telemetry**: We collect minimal usage analytics in compliance with GDPR regulations
+- **Basic telemetry**: We collect minimal usage analytics
 
 ## 🛠️ Troubleshooting
 
@@ -161,7 +139,7 @@ Getting started in 34 seconds:
 ### Development Requirements
 - **macOS 14.0+** (Apple Silicon & Intel supported)
 - **Xcode 15+** for building
-- **API key** from OpenAI, Groq, or Deepgram for testing
+- **API key** from SiliconFlow or BigModel for testing
 
 ### Building from Source
 
@@ -217,60 +195,6 @@ Automated unit tests are planned for future releases.
 - **Why This Works**: Changing the bundle identifier creates a "new" app from macOS perspective, resetting all permissions and app state
 - **Most Reliable Method**: This is more reliable than clearing UserDefaults and ensures a clean onboarding test including all system permissions
 
-### Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to VTS development.
-
----
-
-## 🗺️ Roadmap
-
-- [x] **Auto-open at login**: Auto-open at login with checkbox in the preferences window (✅ Implemented)
-- [x] **Modern Release Automation**: Automated releases with release-please and GitHub Actions (✅ Implemented)
-- [x] **Sparkle Auto-Updates**: Automatic app updates with GitHub Releases appcast hosting (✅ Implemented)
-- [x] **Support real-time API**: OpenAI Real-time Transcription API (✅ Implemented)
-- [ ] **Per-app prompt**: Be able to customize the prompts in a per-app basis.
-
-
-### In a future or maybe pro version, to be decided/ordered by priority, your feedback and contributions are welcome!
-
-- [ ] **More models/providers**: Support for more STT providers like Google, Azure, etc.
-- [ ] **Safe auto-cut**: Auto-cut to maximum time if the user forgets to end (or accidentally starts). But also we could use VAD from real-time APIs?
-- [ ] **LLM step**: Use LLM to process the transcription and improve accuracy, maybe targetted to the app you're using or context in general. (Be able to easily input emojis?). I mean apply transformations based on the app you're injecting text to.
-- [ ] **Advanced Audio Processing**: Noise reduction and gain control, but also some STT providers can do this so maybe not needed?
-- [ ] **Comprehensive Test Suite**: Automated unit tests covering:
-  - Core transcription functionality
-  - Provider validation and error handling  
-  - Device management and priority logic
-  - Integration flows and edge cases
-- [ ] **Accessibility Features**
-
-## 💬 Feedback
-
-Have feedback, suggestions, or issues? We'd love to hear from you! 
-
-**📧 [Send us your feedback](mailto:josueajc@gmail.com?subject=[VTS%20Feedback]%20Your%20thoughts%20on%20VTS)** - Quick and direct way to reach us
-
-You can also:
-- 🐛 [Report bugs or request features](https://github.com/j05u3/VTS/issues) on GitHub
-- 💡 Share your ideas for improvements
-- ⭐ Star the project if you find it useful!
-
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgements
-
-VTS wouldn't be possible without the incredible work of the open-source community. Special thanks to:
-
-### Tools & Scripts
-- [ios-icon-generator](https://github.com/smallmuou/ios-icon-generator) by @smallmuou - for the awesome icon generation script that made creating our app icons effortless
-- [create-dmg](https://github.com/sindresorhus/create-dmg) by @sindresorhus - for the excellent DMG creation script that streamlines our distribution process
-- [Sparkle](https://github.com/sparkle-project/Sparkle) by the Sparkle Project - for providing the robust auto-update framework that keeps VTS current and secure
-
-**Note**: This project builds upon the work of many developers and projects. If I've missed crediting someone or something I sincerely apologize! Please feel free to open an issue or PR to help me give proper recognition where it's due.
-
----
-
-**Made with ❤️ for the macOS community**

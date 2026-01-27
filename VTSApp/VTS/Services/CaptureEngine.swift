@@ -70,11 +70,14 @@ public class CaptureEngine: ObservableObject {
         guard permissionGranted else {
             throw STTError.audioProcessingError("Microphone permission not granted")
         }
-        
-        guard !isRecording else {
-            throw STTError.audioProcessingError("Already recording")
+
+        // Auto-recover if already recording: stop the previous session first
+        if isRecording {
+            print("⚠️ CaptureEngine was already recording. Stopping previous session to restart.")
+            stop()
+            // Give a small buffer for cleanup if needed, though stop() is synchronous
         }
-        
+
         let engine = AVAudioEngine()
         self.audioEngine = engine
         

@@ -26,36 +26,33 @@ public class RestTranscriptionService: ObservableObject {
     }
     
     // MARK: - Published Properties
-    
+
     @Published public var currentText = ""
     @Published public var lastTranscription = ""
     @Published public var isTranscribing = false
     @Published public var error: STTError?
-    
+
     private var provider: RestSTTProvider?
     private var transcriptionTask: Task<Void, Never>?
     private let textInjector = TextInjector()
     private var lastInjectedText = ""
     private var cancellables = Set<AnyCancellable>()
-    
+
     // For retry functionality
     private var currentAudioData: Data?
     private var currentConfig: ProviderConfig?
     private var currentProviderType: STTProviderType?
-    
+
     // Reference to notification manager
     private let notificationManager = NotificationManager.shared
-    
-    // Analytics completion callback
-    public var onTranscriptionCompleted: ((String, String, Bool, Int, Int, Bool) -> Void)?
-    
+
     // Timing properties for analytics
     private var processStartTime: Date?           // When user first presses record button
     private var audioRecordingStartTime: Date?    // When audio recording actually starts
     private var audioRecordingEndTime: Date?      // When audio recording stops
     private var processingStartTime: Date?        // When processing starts (after audio recording ends)
     private var processingEndTime: Date?          // When we receive final result
-    
+
     public init() {
         setupTextInjectorObservation()
         setupNotificationHandlers()
@@ -151,10 +148,10 @@ public class RestTranscriptionService: ObservableObject {
                 handleSuccessfulTranscription(finalText)
                 
                 print(LogMessages.transcriptionCompleted)
-                
+
                 // Track analytics
-                trackAnalytics(provider: provider, config: config, success: true)
-                
+                // trackAnalytics(provider: provider, config: config, success: true)
+
                 // Clear retry context on success
                 clearRetryContext()
                 
@@ -165,10 +162,10 @@ public class RestTranscriptionService: ObservableObject {
                 endTranscriptionTiming()
                 
                 let sttError = error as? STTError ?? STTError.transcriptionError(error.localizedDescription)
-                
+
                 // Track analytics
-                trackAnalytics(provider: provider, config: config, success: false)
-                
+                // trackAnalytics(provider: provider, config: config, success: false)
+
                 handleErrorWithNotification(sttError)
             }
             
@@ -342,8 +339,8 @@ public class RestTranscriptionService: ObservableObject {
                 }
                 
                 // Track analytics
-                trackAnalytics(provider: nil, config: config, success: success, providerType: providerType)
-                
+                // trackAnalytics(provider: nil, config: config, success: success, providerType: providerType)
+
                 clearRetryContext()
                 
             } catch {
@@ -353,8 +350,8 @@ public class RestTranscriptionService: ObservableObject {
                 endTranscriptionTiming()
                 
                 // Track analytics
-                trackAnalytics(provider: nil, config: config, success: false, providerType: providerType)
-                
+                // trackAnalytics(provider: nil, config: config, success: false, providerType: providerType)
+
                 let sttError = error as? STTError ?? STTError.transcriptionError(error.localizedDescription)
                 handleErrorWithNotification(sttError)
             }
@@ -389,28 +386,9 @@ public class RestTranscriptionService: ObservableObject {
     private func endTranscriptionTiming() {
         processingEndTime = Date()
     }
-    
-    private func trackAnalytics(provider: RestSTTProvider?, config: ProviderConfig?, success: Bool, providerType: STTProviderType? = nil) {
-        guard let onCompletion = onTranscriptionCompleted, let config = config else { return }
 
-        guard let providerName = provider?.providerType.rawValue ?? providerType?.rawValue else {
-            print(LogMessages.cannotTrackAnalytics)
-            return
-        }
+    // MARK: - Analytics methods removed
 
-        let processingTimeMs = calculateProcessingTime()
-        let audioDurationMs = calculateAudioDuration()
-
-        onCompletion(
-            providerName,
-            config.model,
-            success,
-            audioDurationMs,
-            processingTimeMs,
-            false  // isRealtime = false for REST service
-        )
-    }
-    
     private func calculateProcessingTime() -> Int {
         guard let startTime = processingStartTime else { return 0 }
         let endTime = processingEndTime ?? Date()

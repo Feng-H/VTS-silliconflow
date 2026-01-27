@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OnboardingAPIKeyStep: View {
     @ObservedObject var appState: AppState
-    @State private var selectedProvider: STTProviderType = .openai // Initial value, overridden in onAppear with appState.selectedProvider
+    @State private var selectedProvider: STTProviderType = .siliconflow // Initial value, overridden in onAppear with appState.selectedProvider
     @State private var apiKey: String = ""
     @State private var showingAPIKey = false
     @State private var isSaving = false
@@ -196,12 +196,10 @@ struct OnboardingAPIKeyStep: View {
     private func openProviderWebsite() {
         let url: URL?
         switch selectedProvider {
-        case .openai:
-            url = URL(string: "https://platform.openai.com/api-keys")
-        case .groq:
-            url = URL(string: "https://console.groq.com/keys")
-        case .deepgram:
-            url = URL(string: "https://console.deepgram.com/project/keys")
+        case .siliconflow:
+            url = URL(string: "https://cloud.siliconflow.cn/account/ak")
+        case .bigmodel:
+            url = URL(string: "https://open.bigmodel.cn/usercenter/apikeys")
         }
         
         if let url = url {
@@ -296,56 +294,46 @@ struct InfoRow: View {
 extension STTProviderType {
     var color: Color {
         switch self {
-        case .openai:
-            return .green
-        case .groq:
-            return .orange
-        case .deepgram:
-            return .blue
+        case .siliconflow:
+            return .purple
+        case .bigmodel:
+            return .indigo
         }
     }
-    
+
     var description: String {
         switch self {
-        case .openai:
-            return "Industry-leading AI models with high accuracy"
-        case .groq:
-            return "Ultra-fast inference with competitive accuracy"
-        case .deepgram:
-            return "Advanced speech recognition with real-time processing"
+        case .siliconflow:
+            return "High-performance model inference platform"
+        case .bigmodel:
+            return "Zhipu AI's powerful GLM-4 models"
         }
     }
-    
+
     var pricingInfo: String {
         switch self {
-        case .openai:
-            return "Pay-per-use pricing, typically $0.006/minute"
-        case .groq:
-            return "Free tier available, very cost-effective"
-        case .deepgram:
-            return "Pay-as-you-go, may start at $0.0059/minute"
+        case .siliconflow:
+            return "Competitive pricing with free tier options"
+        case .bigmodel:
+            return "Pay-per-token with generous free tier"
         }
     }
-    
+
     var speedInfo: String {
         switch self {
-        case .openai:
-            return "Standard processing speed, reliable quality"
-        case .groq:
-            return "Lightning-fast processing, near real-time"
-        case .deepgram:
-            return "Real-time and batch processing capabilities"
+        case .siliconflow:
+            return "Fast inference on high-end GPUs"
+        case .bigmodel:
+            return "Optimized for low latency responses"
         }
     }
-    
+
     var qualityInfo: String {
         switch self {
-        case .openai:
-            return "Excellent accuracy across all languages"
-        case .groq:
-            return "High accuracy with superior speed"
-        case .deepgram:
-            return "Enterprise-grade accuracy with multiple models"
+        case .siliconflow:
+            return "State-of-the-art open source models"
+        case .bigmodel:
+            return "Leading Chinese/English bilingual performance"
         }
     }
 }

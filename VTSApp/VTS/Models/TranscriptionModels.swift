@@ -12,6 +12,16 @@ public struct TranscriptionChunk {
     }
 }
 
+public struct TranscriptionResult {
+    public let text: String
+    public let isFinal: Bool
+
+    public init(text: String, isFinal: Bool) {
+        self.text = text
+        self.isFinal = isFinal
+    }
+}
+
 public struct ProviderConfig {
     public let apiKey: String
     public let model: String
@@ -31,40 +41,37 @@ public struct ProviderConfig {
 }
 
 public enum STTProviderType: String, CaseIterable, Codable {
-    case openai = "OpenAI"
-    case groq = "Groq"
-    case deepgram = "Deepgram"
-    
+    case siliconflow = "SiliconFlow"
+    case bigmodel = "BigModel"
+
     public var restModels: [String] {
         switch self {
-        case .openai:
-            return ["gpt-4o-transcribe", "gpt-4o-mini-transcribe", "whisper-1"]
-        case .groq:
-            return ["whisper-large-v3-turbo", "whisper-large-v3"]
-        case .deepgram:
-            return ["nova-3", "nova-2"]
+        case .siliconflow:
+            // FunAudioLLM/SenseVoiceSmall is the verified model for the transcriptions endpoint
+            return ["FunAudioLLM/SenseVoiceSmall"]
+        case .bigmodel:
+            // glm-asr-2512 is the dedicated ASR model name
+            return ["glm-asr-2512"]
         }
     }
-    
+
     public var realtimeModels: [String] {
         switch self {
-        case .openai:
-            return ["gpt-4o-transcribe", "gpt-4o-mini-transcribe", "whisper-1"]
-        case .groq, .deepgram:
+        case .siliconflow, .bigmodel:
             return [] // Future support
         }
     }
-    
+
     /// Returns all available models (both REST and real-time)
     public var allModels: [String] {
         return restModels + realtimeModels
     }
-    
+
     /// Checks if a model supports real-time streaming
     public func supportsRealtime(_ model: String) -> Bool {
         return realtimeModels.contains(model)
     }
-    
+
     /// Checks if the provider supports real-time streaming at all
     public var supportsRealtimeStreaming: Bool {
         return !realtimeModels.isEmpty

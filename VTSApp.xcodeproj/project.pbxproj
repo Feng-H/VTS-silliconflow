@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		185D1BB92F28E31300DAC744 /* ModifierKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185D1BB82F28E31300DAC744 /* ModifierKeyMonitor.swift */; };
+		185D1BBC2F28E32100DAC744 /* SiliconFlowProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185D1BBB2F28E32100DAC744 /* SiliconFlowProvider.swift */; };
+		185D1BBD2F28E32100DAC744 /* BigModelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185D1BBA2F28E32100DAC744 /* BigModelProvider.swift */; };
 		1A8E3D2A2C8F4E1B00123456 /* VTSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8E3D292C8F4E1B00123456 /* VTSApp.swift */; };
 		1A8E3D2C2C8F4E1B00123456 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8E3D2B2C8F4E1B00123456 /* ContentView.swift */; };
 		1A8E3D2E2C8F4E1C00123456 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A8E3D2D2C8F4E1C00123456 /* Assets.xcassets */; };
@@ -20,12 +23,8 @@
 		CA2836602E69561900CA59D7 /* StreamingTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA28365F2E69561900CA59D7 /* StreamingTranscriptionService.swift */; };
 		CA2836622E69561900CA59D7 /* PartialResultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA28365D2E69561900CA59D7 /* PartialResultsManager.swift */; };
 		CA2836632E69561900CA59D7 /* RestTranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA28365E2E69561900CA59D7 /* RestTranscriptionService.swift */; };
-		CA28366A2E69562A00CA59D7 /* OpenAIStreamingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836692E69562A00CA59D7 /* OpenAIStreamingProvider.swift */; };
-		CA28366B2E69562A00CA59D7 /* GroqRestProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836672E69562A00CA59D7 /* GroqRestProvider.swift */; };
 		CA28366C2E69562A00CA59D7 /* BaseRestSTTProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836642E69562A00CA59D7 /* BaseRestSTTProvider.swift */; };
 		CA28366D2E69562A00CA59D7 /* BaseStreamingSTTProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836652E69562A00CA59D7 /* BaseStreamingSTTProvider.swift */; };
-		CA28366E2E69562A00CA59D7 /* DeepgramRestProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836662E69562A00CA59D7 /* DeepgramRestProvider.swift */; };
-		CA28366F2E69562A00CA59D7 /* OpenAIRestProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836682E69562A00CA59D7 /* OpenAIRestProvider.swift */; };
 		CA2836722E69563D00CA59D7 /* RestSTTProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836702E69563D00CA59D7 /* RestSTTProvider.swift */; };
 		CA2836732E69563D00CA59D7 /* StreamingSTTProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836712E69563D00CA59D7 /* StreamingSTTProvider.swift */; };
 		CA2836762E69564800CA59D7 /* StreamingModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2836752E69564800CA59D7 /* StreamingModels.swift */; };
@@ -42,8 +41,6 @@
 		CA5A14202E3CADD900C01C44 /* OnboardingAccessibilityStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14122E3CADD900C01C44 /* OnboardingAccessibilityStep.swift */; };
 		CA5A14212E3CADD900C01C44 /* OnboardingTestStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14172E3CADD900C01C44 /* OnboardingTestStep.swift */; };
 		CA5A14222E3CADD900C01C44 /* OnboardingAPIKeyStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14132E3CADD900C01C44 /* OnboardingAPIKeyStep.swift */; };
-		CA886DB52E44795800256FE9 /* SparkleUpdaterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA886DB42E44795800256FE9 /* SparkleUpdaterManager.swift */; };
-		CA886DB82E447A1A00256FE9 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = CA886DB72E447A1A00256FE9 /* Sparkle */; };
 		CA98AAD52E24E862004C23D7 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AAD12E24E862004C23D7 /* PreferencesView.swift */; };
 		CA98AAD62E24E862004C23D7 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AAD22E24E862004C23D7 /* StatusBarController.swift */; };
 		CA98AAD72E24E862004C23D7 /* TextInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AAD32E24E862004C23D7 /* TextInjector.swift */; };
@@ -51,16 +48,14 @@
 		CA98AADB2E262796004C23D7 /* TextInjectionTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AADA2E262796004C23D7 /* TextInjectionTestView.swift */; };
 		CA98AADD2E264E60004C23D7 /* SimpleHotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AADC2E264E60004C23D7 /* SimpleHotkeyManager.swift */; };
 		CA98AADF2E265823004C23D7 /* AudioLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AADE2E265823004C23D7 /* AudioLevelView.swift */; };
-		CAA963142E5C2C5800FA11A0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CAA963132E5C2C5800FA11A0 /* FirebaseAnalytics */; };
-		CAA963162E5C330B00FA11A0 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA963152E5C330B00FA11A0 /* AnalyticsService.swift */; };
-		CAA963182E5C34E600FA11A0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CAA963172E5C34E600FA11A0 /* GoogleService-Info.plist */; };
-		CAA9631A2E5C40BB00FA11A0 /* AnalyticsConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA963192E5C40BB00FA11A0 /* AnalyticsConsentManager.swift */; };
-		CAA9631C2E5C40DE00FA11A0 /* OnboardingAnalyticsStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA9631B2E5C40DE00FA11A0 /* OnboardingAnalyticsStep.swift */; };
 		CAB662EB2E6EA3E4003C25AB /* AudioStreamingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */; };
 		CADFFC2B2E3DFEFC00C29988 /* LaunchAtLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		185D1BB82F28E31300DAC744 /* ModifierKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierKeyMonitor.swift; sourceTree = "<group>"; };
+		185D1BBA2F28E32100DAC744 /* BigModelProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigModelProvider.swift; sourceTree = "<group>"; };
+		185D1BBB2F28E32100DAC744 /* SiliconFlowProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiliconFlowProvider.swift; sourceTree = "<group>"; };
 		1A8E3D262C8F4E1B00123456 /* VTS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VTS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A8E3D292C8F4E1B00123456 /* VTSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp.swift; sourceTree = "<group>"; };
 		1A8E3D2B2C8F4E1B00123456 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -77,10 +72,6 @@
 		CA28365F2E69561900CA59D7 /* StreamingTranscriptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingTranscriptionService.swift; sourceTree = "<group>"; };
 		CA2836642E69562A00CA59D7 /* BaseRestSTTProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRestSTTProvider.swift; sourceTree = "<group>"; };
 		CA2836652E69562A00CA59D7 /* BaseStreamingSTTProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseStreamingSTTProvider.swift; sourceTree = "<group>"; };
-		CA2836662E69562A00CA59D7 /* DeepgramRestProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepgramRestProvider.swift; sourceTree = "<group>"; };
-		CA2836672E69562A00CA59D7 /* GroqRestProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroqRestProvider.swift; sourceTree = "<group>"; };
-		CA2836682E69562A00CA59D7 /* OpenAIRestProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIRestProvider.swift; sourceTree = "<group>"; };
-		CA2836692E69562A00CA59D7 /* OpenAIStreamingProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIStreamingProvider.swift; sourceTree = "<group>"; };
 		CA2836702E69563D00CA59D7 /* RestSTTProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestSTTProvider.swift; sourceTree = "<group>"; };
 		CA2836712E69563D00CA59D7 /* StreamingSTTProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingSTTProvider.swift; sourceTree = "<group>"; };
 		CA2836742E69564800CA59D7 /* RealtimeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeSession.swift; sourceTree = "<group>"; };
@@ -97,7 +88,6 @@
 		CA5A14172E3CADD900C01C44 /* OnboardingTestStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTestStep.swift; sourceTree = "<group>"; };
 		CA5A14182E3CADD900C01C44 /* OnboardingWelcomeStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeStep.swift; sourceTree = "<group>"; };
 		CA5A141A2E3CADD900C01C44 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		CA886DB42E44795800256FE9 /* SparkleUpdaterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterManager.swift; sourceTree = "<group>"; };
 		CA98AAD12E24E862004C23D7 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		CA98AAD22E24E862004C23D7 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		CA98AAD32E24E862004C23D7 /* TextInjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInjector.swift; sourceTree = "<group>"; };
@@ -105,9 +95,6 @@
 		CA98AADA2E262796004C23D7 /* TextInjectionTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInjectionTestView.swift; sourceTree = "<group>"; };
 		CA98AADC2E264E60004C23D7 /* SimpleHotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleHotkeyManager.swift; sourceTree = "<group>"; };
 		CA98AADE2E265823004C23D7 /* AudioLevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioLevelView.swift; sourceTree = "<group>"; };
-		CAA963152E5C330B00FA11A0 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
-		CAA963172E5C34E600FA11A0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		CAA963192E5C40BB00FA11A0 /* AnalyticsConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsConsentManager.swift; sourceTree = "<group>"; };
 		CAA9631B2E5C40DE00FA11A0 /* OnboardingAnalyticsStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAnalyticsStep.swift; sourceTree = "<group>"; };
 		CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStreamingQueue.swift; sourceTree = "<group>"; };
 		CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
@@ -122,9 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA886DB82E447A1A00256FE9 /* Sparkle in Frameworks */,
 				1A8E3D481C8F4E1C00123465 /* KeychainAccess in Frameworks */,
-				CAA963142E5C2C5800FA11A0 /* FirebaseAnalytics in Frameworks */,
 				1A8E3D491C8F4E1C00123466 /* KeyboardShortcuts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -151,7 +136,6 @@
 		1A8E3D282C8F4E1B00123456 /* VTSApp */ = {
 			isa = PBXGroup;
 			children = (
-				CAA963172E5C34E600FA11A0 /* GoogleService-Info.plist */,
 				CA98AADE2E265823004C23D7 /* AudioLevelView.swift */,
 				CA98AADC2E264E60004C23D7 /* SimpleHotkeyManager.swift */,
 				CA98AAD82E261723004C23D7 /* SettingsWindowController.swift */,
@@ -192,13 +176,11 @@
 		1A8E3D501C8F4E1C00123467 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				185D1BB82F28E31300DAC744 /* ModifierKeyMonitor.swift */,
 				CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */,
 				CA28365D2E69561900CA59D7 /* PartialResultsManager.swift */,
 				CA28365E2E69561900CA59D7 /* RestTranscriptionService.swift */,
 				CA28365F2E69561900CA59D7 /* StreamingTranscriptionService.swift */,
-				CAA963192E5C40BB00FA11A0 /* AnalyticsConsentManager.swift */,
-				CAA963152E5C330B00FA11A0 /* AnalyticsService.swift */,
-				CA886DB42E44795800256FE9 /* SparkleUpdaterManager.swift */,
 				CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */,
 				CA5A14102E3CAD7500C01C44 /* OnboardingManager.swift */,
 				CA4830A62E2B85700085EEF7 /* NotificationManager.swift */,
@@ -212,12 +194,10 @@
 		1A8E3D511C8F4E1C00123468 /* Providers */ = {
 			isa = PBXGroup;
 			children = (
+				185D1BBA2F28E32100DAC744 /* BigModelProvider.swift */,
+				185D1BBB2F28E32100DAC744 /* SiliconFlowProvider.swift */,
 				CA2836642E69562A00CA59D7 /* BaseRestSTTProvider.swift */,
 				CA2836652E69562A00CA59D7 /* BaseStreamingSTTProvider.swift */,
-				CA2836662E69562A00CA59D7 /* DeepgramRestProvider.swift */,
-				CA2836672E69562A00CA59D7 /* GroqRestProvider.swift */,
-				CA2836682E69562A00CA59D7 /* OpenAIRestProvider.swift */,
-				CA2836692E69562A00CA59D7 /* OpenAIStreamingProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -307,8 +287,6 @@
 			packageProductDependencies = (
 				1A8E3D471C8F4E1C00123465 /* KeychainAccess */,
 				1A8E3D481C8F4E1C00123466 /* KeyboardShortcuts */,
-				CA886DB72E447A1A00256FE9 /* Sparkle */,
-				CAA963132E5C2C5800FA11A0 /* FirebaseAnalytics */,
 			);
 			productName = VTSApp;
 			productReference = 1A8E3D262C8F4E1B00123456 /* VTS.app */;
@@ -341,8 +319,6 @@
 			packageReferences = (
 				1A8E3D341C8F4E1C00123464 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				1A8E3D361C8F4E1C00123465 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
-				CA886DB62E447A1A00256FE9 /* XCRemoteSwiftPackageReference "Sparkle" */,
-				CAA963122E5C2C5800FA11A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 1A8E3D272C8F4E1B00123456 /* Products */;
 			projectDirPath = "";
@@ -360,7 +336,6 @@
 			files = (
 				1A8E3D312C8F4E1C00123456 /* Preview Assets.xcassets in Resources */,
 				1A8E3D2E2C8F4E1C00123456 /* Assets.xcassets in Resources */,
-				CAA963182E5C34E600FA11A0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A8E3D2C2C8F4E1B00123456 /* ContentView.swift in Sources */,
+				185D1BB92F28E31300DAC744 /* ModifierKeyMonitor.swift in Sources */,
 				CAB662EB2E6EA3E4003C25AB /* AudioStreamingQueue.swift in Sources */,
 				1A8E3D2A2C8F4E1B00123456 /* VTSApp.swift in Sources */,
 				CA98AADF2E265823004C23D7 /* AudioLevelView.swift in Sources */,
@@ -385,12 +361,8 @@
 				CA98AADB2E262796004C23D7 /* TextInjectionTestView.swift in Sources */,
 				CA98AAD92E261723004C23D7 /* SettingsWindowController.swift in Sources */,
 				CA4830A72E2B85730085EEF7 /* NotificationManager.swift in Sources */,
-				CA28366A2E69562A00CA59D7 /* OpenAIStreamingProvider.swift in Sources */,
-				CA28366B2E69562A00CA59D7 /* GroqRestProvider.swift in Sources */,
 				CA28366C2E69562A00CA59D7 /* BaseRestSTTProvider.swift in Sources */,
 				CA28366D2E69562A00CA59D7 /* BaseStreamingSTTProvider.swift in Sources */,
-				CA28366E2E69562A00CA59D7 /* DeepgramRestProvider.swift in Sources */,
-				CA28366F2E69562A00CA59D7 /* OpenAIRestProvider.swift in Sources */,
 				CA5A13F92E3C5DA800C01C44 /* AutoScrollingTextEditor.swift in Sources */,
 				CA2836602E69561900CA59D7 /* StreamingTranscriptionService.swift in Sources */,
 				CA2836722E69563D00CA59D7 /* RestSTTProvider.swift in Sources */,
@@ -401,18 +373,16 @@
 				1A8E3D461C8F4E1C00123463 /* TranscriptionModels.swift in Sources */,
 				CA5A14112E3CAD7500C01C44 /* OnboardingManager.swift in Sources */,
 				CA5A141B2E3CADD900C01C44 /* OnboardingWelcomeStep.swift in Sources */,
-				CA886DB52E44795800256FE9 /* SparkleUpdaterManager.swift in Sources */,
 				CA5A141C2E3CADD900C01C44 /* OnboardingNotificationsStep.swift in Sources */,
 				CA5A141D2E3CADD900C01C44 /* OnboardingCompletionStep.swift in Sources */,
-				CAA963162E5C330B00FA11A0 /* AnalyticsService.swift in Sources */,
 				CA5A141E2E3CADD900C01C44 /* OnboardingView.swift in Sources */,
 				CADFFC2B2E3DFEFC00C29988 /* LaunchAtLoginManager.swift in Sources */,
 				CA5A141F2E3CADD900C01C44 /* OnboardingMicrophoneStep.swift in Sources */,
+				185D1BBC2F28E32100DAC744 /* SiliconFlowProvider.swift in Sources */,
+				185D1BBD2F28E32100DAC744 /* BigModelProvider.swift in Sources */,
 				CA5A14202E3CADD900C01C44 /* OnboardingAccessibilityStep.swift in Sources */,
 				CA5A14212E3CADD900C01C44 /* OnboardingTestStep.swift in Sources */,
-				CAA9631C2E5C40DE00FA11A0 /* OnboardingAnalyticsStep.swift in Sources */,
 				CA5A14222E3CADD900C01C44 /* OnboardingAPIKeyStep.swift in Sources */,
-				CAA9631A2E5C40BB00FA11A0 /* AnalyticsConsentManager.swift in Sources */,
 				CA4830AD2E2B859F0085EEF7 /* RetryContext.swift in Sources */,
 				1A8E3D471C8F4E1C00123464 /* AsyncExtensions.swift in Sources */,
 			);
@@ -574,11 +544,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = VTSApp/VTSApp.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"VTSApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 887583966J;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 3H34K4P363;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = VTSApp/Info.plist;
@@ -636,22 +608,6 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		CA886DB62E447A1A00256FE9 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sparkle-project/Sparkle";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.8.0;
-			};
-		};
-		CAA963122E5C2C5800FA11A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 12.1.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -664,16 +620,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1A8E3D361C8F4E1C00123465 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
 			productName = KeyboardShortcuts;
-		};
-		CA886DB72E447A1A00256FE9 /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CA886DB62E447A1A00256FE9 /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
-		};
-		CAA963132E5C2C5800FA11A0 /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = CAA963122E5C2C5800FA11A0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

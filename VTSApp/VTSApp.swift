@@ -1,25 +1,22 @@
 import SwiftUI
+import AVFoundation
 import KeyboardShortcuts
 import KeychainAccess
 import Combine
-import FirebaseCore
 
 @main
 struct VTSApp: App {
-    
+
     init() {
-        // Configure Firebase
-        FirebaseApp.configure()
-        
-        // Initialize analytics consent manager (handles setCollectionEnabled automatically)
-        _ = AnalyticsConsentManager.shared
-        
-        // Track app launch (will only fire if consent is granted)
-        AnalyticsService.shared.trackAppLaunch()
+        // Proactively request microphone permission on launch
+        // This helps ensure the system prompt appears immediately
+        AVCaptureDevice.requestAccess(for: .audio) { granted in
+            print("🎤 Startup microphone permission check: \(granted)")
+        }
     }
     @StateObject private var appState = AppState()
     @StateObject private var onboardingManager = OnboardingManager.shared
-    
+
     var body: some Scene {
         WindowGroup {
             if !onboardingManager.isOnboardingCompleted {
@@ -29,7 +26,7 @@ struct VTSApp: App {
                         if completed {
                             // Initialize the main app after onboarding
                             appState.initializeMainApp()
-                            
+
                             // Close the onboarding window
                             NSApplication.shared.windows.first?.close()
                         }
@@ -40,13 +37,27 @@ struct VTSApp: App {
                     .frame(width: 0, height: 0)
                     .onAppear {
                         appState.initializeMainApp()
-                        // Close the main window immediately when onboarding is done
-                        NSApplication.shared.windows.first?.close()
+                        // Show preferences window on launch with a slight delay to ensure it appears
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            appState.showPreferences()
+
+                            // Close the empty main window (the one that's not the settings window)
+                            // This prevents closing the settings window if it was somehow the 'first' one
+                            if let settingsWindow = NSApplication.shared.windows.first(where: { $0.title == "VTS Settings" }) {
+                                NSApplication.shared.windows.first(where: { $0 != settingsWindow })?.close()
+                            } else {
+                                // Fallback if we can't find settings window (shouldn't happen)
+                                // Only close if we have more than 1 window to be safe
+                                if NSApplication.shared.windows.count > 1 {
+                                    NSApplication.shared.windows.first?.close()
+                                }
+                            }
+                        }
                     }
             }
         }
         .windowResizability(.contentSize)
-        
+
         Settings {
             EmptyView()
         }
@@ -134,7 +145,7 @@ public class APIKeyManager: ObservableObject {
                let provider = STTProviderType(rawValue: rawValue) {
                 return provider
             }
-            return .openai // Default
+            return .siliconflow // Default
         }
         set {
             userDefaults.set(newValue.rawValue, forKey: selectedProviderKey)
@@ -162,12 +173,10 @@ extension STTProviderType {
     /// Icon name for the provider
     var iconName: String {
         switch self {
-        case .openai:
-            return "brain.head.profile"
-        case .groq:
-            return "bolt.fill"
-        case .deepgram:
-            return "waveform.circle.fill"
+        case .siliconflow:
+            return "cpu.fill"
+        case .bigmodel:
+            return "sparkles"
         }
     }
 }
@@ -181,12 +190,12 @@ class AppState: ObservableObject {
     private let deviceManager = DeviceManager()
     private let apiKeyManager = APIKeyManager()
     private let hotkeyManager = SimpleHotkeyManager.shared
+    private let modifierKeyMonitor = ModifierKeyMonitor.shared
     private let notificationManager = NotificationManager.shared
     private let launchAtLoginManager = LaunchAtLoginManager.shared
-    private let sparkleUpdaterManager = SparkleUpdaterManager.shared
-    private let analyticsConsentManager = AnalyticsConsentManager.shared
+    // Removed Sparkle and Analytics managers
     private var cancellables = Set<AnyCancellable>()
-    
+
     private var settingsWindowController: SettingsWindowController?
     private var isMainAppInitialized = false
     
@@ -283,15 +292,9 @@ class AppState: ObservableObject {
     var launchAtLoginManagerService: LaunchAtLoginManager {
         return launchAtLoginManager
     }
-    
-    var sparkleUpdaterManagerService: SparkleUpdaterManager {
-        return sparkleUpdaterManager
-    }
-    
-    var analyticsConsentManagerService: AnalyticsConsentManager {
-        return analyticsConsentManager
-    }
-    
+
+    // Removed Sparkle and Analytics service accessors
+
     init() {
         loadSystemPrompt()
         loadDeepgramKeywords()
@@ -380,18 +383,8 @@ class AppState: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
-        
-        sparkleUpdaterManager.objectWillChange
-            .sink { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-            .store(in: &cancellables)
-        
-        analyticsConsentManager.objectWillChange
-            .sink { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-            .store(in: &cancellables)
+
+        // Removed Sparkle and Analytics bindings
     }
     
     private func initializeAfterLaunch() {
@@ -434,17 +427,37 @@ class AppState: ObservableObject {
     }
     
     private func setupGlobalHotkey() {
-        // Set up the hotkey handlers
+        // Set up the hotkey handlers (legacy support)
         hotkeyManager.onToggleRecording = { [weak self] in
             self?.toggleRecording()
         }
-        
+
         hotkeyManager.onCopyLastTranscription = { [weak self] in
             self?.copyLastTranscription()
         }
-        
+
         // Register the hotkeys
         hotkeyManager.registerHotkey()
+
+        // Setup Fn key monitoring for push-to-talk
+        modifierKeyMonitor.onFnKeyDown = { [weak self] in
+            guard let self = self else { return }
+            if !self.isRecording {
+                print("Fn key down: Starting recording")
+                self.startRecording()
+            }
+        }
+
+        modifierKeyMonitor.onFnKeyUp = { [weak self] in
+            guard let self = self else { return }
+            if self.isRecording {
+                print("Fn key up: Stopping recording")
+                self.stopRecording()
+            }
+        }
+
+        // Enable monitoring by default
+        modifierKeyMonitor.isEnabled = true
     }
     
     private func setupNotifications() {
@@ -464,51 +477,24 @@ class AppState: ObservableObject {
     
     private func setupTranscriptionServices() {
         updateProvider()
-        
-        // Set up analytics callback for REST service
-        restTranscriptionService.onTranscriptionCompleted = { [weak self] provider, model, success, audioDurationMs, processingTimeMs, isRealtime in
-            AnalyticsService.shared.trackTranscriptionCompleted(
-                provider: provider,
-                model: model,
-                success: success,
-                audioDurationMs: audioDurationMs,
-                processingTimeMs: processingTimeMs,
-                isRealtime: isRealtime
-            )
-        }
-        
-        // Set up analytics callback for streaming service
-        streamingTranscriptionService.onTranscriptionCompleted = { [weak self] provider, model, success, audioDurationMs, processingTimeMs, isRealtime in
-            AnalyticsService.shared.trackTranscriptionCompleted(
-                provider: provider,
-                model: model,
-                success: success,
-                audioDurationMs: audioDurationMs,
-                processingTimeMs: processingTimeMs,
-                isRealtime: isRealtime
-            )
-        }
+
+        // Analytics callbacks removed
     }
     
     private func updateProvider() {
         // Set up REST providers
         switch selectedProvider {
-        case .openai:
-            restTranscriptionService.setProvider(OpenAIRestProvider())
-        case .groq:
-            restTranscriptionService.setProvider(GroqRestProvider())
-        case .deepgram:
-            restTranscriptionService.setProvider(DeepgramRestProvider())
+        case .siliconflow:
+            restTranscriptionService.setProvider(SiliconFlowProvider())
+        case .bigmodel:
+            restTranscriptionService.setProvider(BigModelProvider())
         }
-        
-        // Set up streaming providers (only OpenAI supported for now)
-        switch selectedProvider {
-        case .openai:
-            streamingTranscriptionService.setProvider(OpenAIStreamingProvider())
-        case .groq, .deepgram:
-            // Future support - no streaming providers available yet
-            break
-        }
+
+        // Set up streaming providers (none supported currently)
+        // switch selectedProvider {
+        // case .siliconflow, .bigmodel:
+        //    break
+        // }
     }
     
     func toggleRecording() {
@@ -554,9 +540,9 @@ class AppState: ObservableObject {
             }
             
             // Configure provider-specific settings
-            let providerSystemPrompt = (selectedProvider != .deepgram && !systemPrompt.isEmpty) ? systemPrompt : nil
-            let providerKeywords = (selectedProvider == .deepgram && selectedModel != "nova-3" && !deepgramKeywords.isEmpty) ? deepgramKeywords : nil
-            
+            let providerSystemPrompt = !systemPrompt.isEmpty ? systemPrompt : nil
+            let providerKeywords: [String]? = nil // Keywords not supported for current providers
+
             let config = ProviderConfig(
                 apiKey: apiKey,
                 model: selectedModel,
@@ -600,8 +586,8 @@ class AppState: ObservableObject {
             statusBarController.updateRecordingState(true)
             
             // Track analytics event for start recording
-            AnalyticsService.shared.trackStartRecording()
-            
+            // AnalyticsService.shared.trackStartRecording()
+
             print("Voice recording started successfully")
         } catch {
             print("Failed to start recording: \(error)")

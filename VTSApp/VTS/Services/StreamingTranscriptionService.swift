@@ -49,17 +49,14 @@ public class StreamingTranscriptionService: ObservableObject {
     
     // Reference to notification manager
     private let notificationManager = NotificationManager.shared
-    
-    // Analytics completion callback
-    public var onTranscriptionCompleted: ((String, String, Bool, Int, Int, Bool) -> Void)?
-    
+
     // Timing properties for analytics
     private var processStartTime: Date?
     private var audioRecordingStartTime: Date?
     private var audioRecordingEndTime: Date?
     private var processingStartTime: Date?
     private var processingEndTime: Date?
-    
+
     public init() {
         partialResults = PartialResultsManager()
         setupTextInjectorObservation()
@@ -144,8 +141,8 @@ public class StreamingTranscriptionService: ObservableObject {
                 let sttError = convertToSTTError(error)
                 
                 // Track analytics
-                trackAnalytics(provider: provider, config: config, success: false)
-                
+                // trackAnalytics(provider: provider, config: config, success: false)
+
                 handleError(sttError)
             }
             
@@ -192,10 +189,11 @@ public class StreamingTranscriptionService: ObservableObject {
         }
         
         // Step 3: Now start message listening with callback in place
-        if let openAIProvider = provider as? OpenAIStreamingProvider {
-            try await openAIProvider.startListening(for: session)
-        }
-        
+        // OpenAI provider handling removed
+        // if let openAIProvider = provider as? OpenAIStreamingProvider {
+        //    try await openAIProvider.startListening(for: session)
+        // }
+
         print(LogMessages.sessionEstablished)
         
         // Step 4: Configure the streaming queue with provider and session
@@ -225,12 +223,12 @@ public class StreamingTranscriptionService: ObservableObject {
     
     private func performBackgroundCleanup(provider: StreamingSTTProvider?, config: ProviderConfig?) async {
         print("🧹 StreamingTranscriptionService: Starting background cleanup...")
-        
+
         // Track analytics (using the partial results final transcript)
         await MainActor.run {
-            trackAnalytics(provider: provider, config: config, success: true)
+            // trackAnalytics(provider: provider, config: config, success: true)
         }
-        
+
         // Cleanup session
         await MainActor.run {
             currentSession = nil
@@ -342,29 +340,9 @@ public class StreamingTranscriptionService: ObservableObject {
     private func endTranscriptionTiming() {
         processingEndTime = Date()
     }
-    
-    private func trackAnalytics(provider: StreamingSTTProvider?, config: ProviderConfig?, success: Bool, providerType: STTProviderType? = nil) {
-        guard let onCompletion = onTranscriptionCompleted, let config = config else { return }
 
-        guard let providerName = provider?.providerType.rawValue ?? providerType?.rawValue else {
-            print(LogMessages.cannotTrackAnalytics)
-            return
-        }
+    // MARK: - Analytics methods removed
 
-        let processingTimeMs = calculateProcessingTime()
-        let audioDurationMs = calculateAudioDuration()
-
-        // Keep provider name clean, use isRealtime parameter to differentiate
-        onCompletion(
-            providerName,
-            config.model,
-            success,
-            audioDurationMs,
-            processingTimeMs,
-            true  // isRealtime = true for streaming service
-        )
-    }
-    
     private func calculateProcessingTime() -> Int {
         guard let startTime = processingStartTime else { return 0 }
         let endTime = processingEndTime ?? Date()

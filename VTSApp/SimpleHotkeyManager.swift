@@ -4,7 +4,7 @@ import KeyboardShortcuts
 import Combine
 
 extension KeyboardShortcuts.Name {
-    static let toggleRecording = Self("toggleRecording", default: .init(.semicolon, modifiers: [.command, .shift]))
+    static let toggleRecording = Self("toggleRecording", default: nil)
     static let copyLastTranscription = Self("copyLastTranscription", default: nil)
 }
 
@@ -12,27 +12,27 @@ extension KeyboardShortcuts.Name {
 public class SimpleHotkeyManager: ObservableObject {
     // Constants for hotkey display
     public static let NO_HOTKEY_SET = "None"
-    
+
     public static let shared = SimpleHotkeyManager()
-    
+
     @Published public var isEnabled = false
-    @Published public var currentHotkeyString = "⌘⇧;" // Default fallback
-    @Published public var currentCopyHotkeyString = "⌥⌘⇧C" // Default fallback for copy
-    
+    @Published public var currentHotkeyString = "Hold Right Cmd" // Default fallback
+    @Published public var currentCopyHotkeyString = "None" // Default fallback for copy
+
     public var onToggleRecording: (() -> Void)?
     public var onCopyLastTranscription: (() -> Void)?
     private var cancellables = Set<AnyCancellable>()
     private var hotkeyUpdateTimer: Timer?
-    
+
     private init() {
         updateCurrentHotkeyString()
         updateCurrentCopyHotkeyString()
-        
+
         // Since KeyboardShortcuts.events doesn't exist, we'll use a timer to periodically check for changes
         // This is not ideal but necessary until the library provides event-driven updates
         startHotkeyUpdateTimer()
     }
-    
+
     private func startHotkeyUpdateTimer() {
         hotkeyUpdateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
@@ -41,19 +41,17 @@ public class SimpleHotkeyManager: ObservableObject {
             }
         }
     }
-    
+
     deinit {
         hotkeyUpdateTimer?.invalidate()
     }
-    
+
     /// Update the published currentHotkeyString with the current shortcut
     private func updateCurrentHotkeyString() {
-        let newHotkeyString = getCurrentHotkeyDisplayString()
-        if currentHotkeyString != newHotkeyString {
-            currentHotkeyString = newHotkeyString
-        }
+        // Always return the fixed instruction for Right Command
+        currentHotkeyString = "Hold Right Cmd"
     }
-    
+
     /// Update the published currentCopyHotkeyString with the current shortcut
     private func updateCurrentCopyHotkeyString() {
         let newHotkeyString = getCurrentCopyHotkeyDisplayString()
@@ -61,16 +59,16 @@ public class SimpleHotkeyManager: ObservableObject {
             currentCopyHotkeyString = newHotkeyString
         }
     }
-    
+
     /// Manually refresh the hotkey strings (call when hotkeys change)
     public func refreshHotkeyString() {
         updateCurrentHotkeyString()
         updateCurrentCopyHotkeyString()
     }
-    
-    /// Get the current hotkey as a display string (e.g., "⌘⇧;")
+
+    /// Get the current hotkey as a display string (e.g., "Hold Right Cmd")
     private func getCurrentHotkeyDisplayString() -> String {
-        return getHotkeyDisplayString(for: .toggleRecording, fallback: Self.NO_HOTKEY_SET)
+        return "Hold Right Cmd"
     }
     
     /// Get the current copy hotkey as a display string (e.g., "⌥⌘⇧C")
@@ -266,17 +264,13 @@ public class SimpleHotkeyManager: ObservableObject {
     
     public func registerHotkey() {
         guard !isEnabled else { return }
-        
+
         print("Registering global hotkeys:")
-        print("  Toggle Recording: \(currentHotkeyString)")
+        print("  Toggle Recording: Disabled (Use Right Cmd)")
         print("  Copy Last Transcription: \(currentCopyHotkeyString)")
-        
-        // Register the recording toggle hotkey handler
-        KeyboardShortcuts.onKeyDown(for: .toggleRecording) { [weak self] in
-            print("Global recording hotkey pressed!")
-            self?.onToggleRecording?()
-        }
-        
+
+        // Recording toggle hotkey handler removed - replaced by ModifierKeyMonitor for Right Cmd
+
         // Register the copy last transcription hotkey handler only if it's set
         if currentCopyHotkeyString != Self.NO_HOTKEY_SET {
             KeyboardShortcuts.onKeyDown(for: .copyLastTranscription) { [weak self] in
@@ -284,7 +278,7 @@ public class SimpleHotkeyManager: ObservableObject {
                 self?.onCopyLastTranscription?()
             }
         }
-        
+
         isEnabled = true
         print("Global hotkeys registered successfully")
     }

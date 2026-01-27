@@ -202,20 +202,26 @@ public class TextInjector: ObservableObject {
     
     public func requestAccessibilityPermission() {
         print("Requesting accessibility permission for text insertion...")
-        
+
         // Check current status
         updatePermissionStatus()
         if hasAccessibilityPermission {
             print("Accessibility permission already granted")
             return
         }
-        
+
         // Request permission with system prompt (dialog)
+        // Note: This only works if the app hasn't been denied before
         let promptOptions = [
             kAXTrustedCheckOptionPrompt.takeUnretainedValue() as CFString: true as CFBoolean
         ] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(promptOptions)
-        
+
+        // Always open System Settings to help the user
+        // This is necessary because if they previously denied it (or if Xcode build ID changed),
+        // the prompt won't appear, and they need to manually toggle/add it.
+        openSystemSettings()
+
         // Start monitoring for permission changes
         startMonitoring()
     }

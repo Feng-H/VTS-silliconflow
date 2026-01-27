@@ -62,7 +62,7 @@ struct OnboardingWelcomeStep: View {
                 FeatureCard(
                     icon: "brain.head.profile",
                     title: "AI-Powered",
-                    description: "OpenAI, Groq & Deepgram integration for superior accuracy",
+                    description: "SiliconFlow & BigModel integration for superior accuracy",
                     color: .green
                 )
                 .opacity(animateFeatures ? 1.0 : 0.0)

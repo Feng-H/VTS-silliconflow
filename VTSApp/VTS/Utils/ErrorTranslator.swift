@@ -138,9 +138,10 @@ public struct ErrorTranslator {
                     needsSettings: false
                 )
             } else {
+                // Include the actual error details for debugging
                 return ErrorTranslation(
                     message: "Transcription failed",
-                    hint: "Please try recording again",
+                    hint: "Error: \(details)",
                     canRetry: true,
                     needsSettings: false
                 )
