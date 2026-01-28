@@ -258,6 +258,10 @@ build_app() {
     <true/>
     <key>compileBitcode</key>
     <false/>
+    <key>signingCertificate</key>
+    <string>-</string>
+    <key>teamID</key>
+    <string></string>
 </dict>
 </plist>
 EOF
@@ -265,12 +269,18 @@ EOF
 
     # Export app
     log_info "Exporting application..."
+    # If ad-hoc, ensure we don't pass any team args
+    local export_team_args="$team_args"
+    if [ "$signing_identity" = "-" ]; then
+        export_team_args=""
+    fi
+
     if ! xcodebuild \
         -exportArchive \
         -archivePath "build/$APP_NAME.xcarchive" \
         -exportOptionsPlist "$export_plist" \
         -exportPath build/export \
-        $team_args; then
+        $export_team_args; then
         log_error "Failed to export application"
         exit 1
     fi
