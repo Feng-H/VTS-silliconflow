@@ -195,23 +195,34 @@ clean_build() {
 # Build the application
 build_app() {
     log_info "Building universal binary..."
-    
+
     # Resolve dependencies first
     log_info "Resolving Swift Package dependencies..."
     if ! xcodebuild -resolvePackageDependencies -scheme "$SCHEME" -project "$PROJECT"; then
         log_error "Failed to resolve Swift Package dependencies"
         exit 1
     fi
-    
+
+    # Check signing identity to determine build arguments
+    local signing_identity
+    signing_identity=$(get_signing_identity)
+
+    local team_args=""
+    local signing_args=""
+
+    if [ "$signing_identity" != "-" ] && [ -n "$APPLE_TEAM_ID" ]; then
+        log_info "Building with Development Team: $APPLE_TEAM_ID"
+        team_args="DEVELOPMENT_TEAM=$APPLE_TEAM_ID"
+    else
+        log_warning "No valid Developer ID found. Building unsigned archive (will use Ad-hoc later)."
+        # Force unsigned build for archive to prevent build failure due to missing team/certs
+        signing_args="CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO"
+        team_args=""
+    fi
+
     # Create archive
     log_info "Creating archive..."
-    
-    # Set development team
-    local team_args=""
-    if [ -n "$APPLE_TEAM_ID" ]; then
-        team_args="DEVELOPMENT_TEAM=$APPLE_TEAM_ID"
-    fi
-    
+
     if ! xcodebuild \
         -project "$PROJECT" \
         -scheme "$SCHEME" \
@@ -220,19 +231,16 @@ build_app() {
         ARCHS="arm64 x86_64" \
         ONLY_ACTIVE_ARCH=NO \
         $team_args \
+        $signing_args \
         archive; then
         log_error "Failed to create archive"
         exit 1
     fi
-    
+
     log_success "Archive created successfully"
-    
+
     # Create a temporary ExportOptions.plist for Ad-hoc signing if needed
     local export_plist="scripts/ExportOptions.plist"
-
-    # Check if we are using Ad-hoc signing
-    local signing_identity
-    signing_identity=$(get_signing_identity)
 
     if [ "$signing_identity" = "-" ]; then
         log_info "Generating Ad-hoc ExportOptions.plist..."
