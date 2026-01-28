@@ -273,22 +273,38 @@ build_app() {
 EOF
     fi
 
-    # Export app
+    # Export app (or copy from archive if using Ad-hoc)
     log_info "Exporting application..."
-    # If ad-hoc, ensure we don't pass any team args
-    local export_team_args="$team_args"
-    if [ "$signing_identity" = "-" ]; then
-        export_team_args=""
-    fi
 
-    if ! xcodebuild \
-        -exportArchive \
-        -archivePath "build/$APP_NAME.xcarchive" \
-        -exportOptionsPlist "$export_plist" \
-        -exportPath build/export \
-        $export_team_args; then
-        log_error "Failed to export application"
-        exit 1
+    if [ "$signing_identity" = "-" ]; then
+        log_info "Ad-hoc mode detected. Skipping xcodebuild export and extracting .app directly..."
+
+        # Manually extract app from archive
+        # Archive path: build/VTS.xcarchive/Products/Applications/VTS.app
+        local archive_app_path="build/$APP_NAME.xcarchive/Products/Applications/$PRODUCT_NAME.app"
+        local export_dir="build/export"
+        mkdir -p "$export_dir"
+
+        if [ -d "$archive_app_path" ]; then
+            cp -R "$archive_app_path" "$export_dir/"
+            log_success "Manually extracted $PRODUCT_NAME.app to export directory"
+        else
+            log_error "Could not find app in archive at: $archive_app_path"
+            # List archive contents for debugging
+            find "build/$APP_NAME.xcarchive" -maxdepth 3
+            exit 1
+        fi
+    else
+        # Standard export for signed builds
+        if ! xcodebuild \
+            -exportArchive \
+            -archivePath "build/$APP_NAME.xcarchive" \
+            -exportOptionsPlist "$export_plist" \
+            -exportPath build/export \
+            $team_args; then
+            log_error "Failed to export application"
+            exit 1
+        fi
     fi
     
     # Verify the build
