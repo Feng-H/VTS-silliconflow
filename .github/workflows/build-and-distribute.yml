@@ -77,3 +77,74 @@ jobs:
           ${{ env.APP_NAME }}-${{ steps.get_version.outputs.version_number }}-Universal.dmg
           checksums.txt
         token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update Homebrew Tap
+      env:
+        # 必须在仓库 Secrets 中配置此 Token
+        TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        VERSION_NUMBER: ${{ steps.get_version.outputs.version_number }}
+        VERSION_TAG: ${{ steps.get_version.outputs.version }}
+        APP_NAME: ${{ env.APP_NAME }}
+        GITHUB_USER: ${{ github.repository_owner }}
+        REPO_NAME: ${{ github.event.repository.name }}
+      run: |
+        echo "🍺 Updating Homebrew Tap..."
+
+        if [ -z "$TAP_TOKEN" ]; then
+          echo "⚠️ HOMEBREW_TAP_TOKEN secret is missing. Skipping Homebrew update."
+          echo "Please add it to Settings > Secrets and variables > Actions"
+          exit 0
+        fi
+
+        # 1. 计算 SHA256
+        DMG_FILE="${APP_NAME}-${VERSION_NUMBER}-Universal.dmg"
+        SHA256=$(shasum -a 256 "$DMG_FILE" | awk '{print $1}')
+        echo "File: $DMG_FILE"
+        echo "SHA256: $SHA256"
+
+        # 2. 拉取 Tap 仓库
+        git clone "https://$GITHUB_USER:$TAP_TOKEN@github.com/$GITHUB_USER/homebrew-tap.git" tap-repo
+        cd tap-repo
+
+        # 配置 Git
+        git config user.name "GitHub Action"
+        git config user.email "action@github.com"
+
+        # 3. 创建 Casks 目录
+        mkdir -p Casks
+
+        # 4. 生成 Cask 文件 (Ruby 语法)
+        # 注意：Cask 的 token 必须是全小写、短横线连接
+        CASK_TOKEN="vts"
+
+        cat > Casks/$CASK_TOKEN.rb <<EOF
+        cask "$CASK_TOKEN" do
+          version "$VERSION_NUMBER"
+          sha256 "$SHA256"
+
+          url "https://github.com/$GITHUB_USER/$REPO_NAME/releases/download/$VERSION_TAG/$DMG_FILE"
+          name "VTS"
+          name "Voice Typing Studio"
+          desc "Open-source macOS dictation replacement with AI-powered transcription"
+          homepage "https://github.com/$GITHUB_USER/$REPO_NAME"
+
+          app "VTS.app"
+
+          zap trash: [
+            "~/Library/Preferences/com.voicetypestudio.app.plist",
+            "~/Library/Caches/com.voicetypestudio.app",
+            "~/Library/Application Support/VTS"
+          ]
+        end
+        EOF
+
+        # 5. 提交并推送
+        git add Casks/$CASK_TOKEN.rb
+
+        if git diff --staged --quiet; then
+          echo "ℹ️ No changes to Cask file."
+        else
+          git commit -m "Update VTS to $VERSION_NUMBER"
+          git push
+          echo "✅ Successfully updated Homebrew Tap!"
+        fi
