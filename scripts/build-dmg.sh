@@ -357,7 +357,7 @@ get_signing_identity() {
         return 0
     else
         # Fallback to Ad-hoc signing if no certificate found
-        log_warning "No Developer ID certificate found. Using Ad-hoc signing (-)."
+        log_warning "No Developer ID certificate found. Using Ad-hoc signing (-)." >&2
         echo "-"
         return 0
     fi
