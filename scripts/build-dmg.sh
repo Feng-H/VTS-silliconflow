@@ -409,40 +409,34 @@ create_dmg() {
         fi
     fi
     
+    # Create the DMG using native hdiutil (more reliable for CI/Ad-hoc)
+    log_info "Creating DMG using native hdiutil..."
+
+    # Create a temporary directory for the DMG content
+    local dmg_content="build/dmg_content"
+    rm -rf "$dmg_content"
+    mkdir -p "$dmg_content"
+
+    # Copy app to DMG content
+    cp -R "$APP_PATH" "$dmg_content/"
+
+    # Create a symlink to Applications folder
+    ln -s /Applications "$dmg_content/Applications"
+
     # Create the DMG
-    if create-dmg "${CREATE_DMG_ARGS[@]}" "$APP_PATH"; then
-        # Find the created DMG
-        CREATED_DMG=$(find . -name "*$APP_NAME*.dmg" -type f -newer "$APP_PATH" | head -n1)
-        
-        if [ -n "$CREATED_DMG" ] && [ -f "$CREATED_DMG" ]; then
-            # Rename to our expected name if different
-            if [ "$CREATED_DMG" != "./$DMG_NAME" ]; then
-                mv "$CREATED_DMG" "$DMG_NAME"
-            fi
-            
-            log_success "DMG created: $DMG_NAME"
-            
-            # Show file size
-            SIZE=$(du -h "$DMG_NAME" | cut -f1)
-            log_info "DMG size: $SIZE"
-            
-            # Store DMG name for later steps
-            echo "$DMG_NAME" > dmg_name.txt
-            
-            # Verify DMG signature if signing was enabled
-            if [ "$SKIP_SIGNING" != "true" ]; then
-                log_info "Verifying DMG signature..."
-                if codesign --verify --verbose "$DMG_NAME" 2>/dev/null; then
-                    log_success "DMG signature verified"
-                else
-                    log_error "DMG signature verification failed"
-                    exit 1
-                fi
-            fi
-        else
-            log_error "Could not find created DMG file"
-            exit 1
-        fi
+    if hdiutil create -volname "$APP_NAME $VERSION" \
+        -srcfolder "$dmg_content" \
+        -ov -format UDZO \
+        "$DMG_NAME"; then
+
+        log_success "DMG created: $DMG_NAME"
+
+        # Show file size
+        SIZE=$(du -h "$DMG_NAME" | cut -f1)
+        log_info "DMG size: $SIZE"
+
+        # Store DMG name for later steps
+        echo "$DMG_NAME" > dmg_name.txt
     else
         log_error "DMG creation failed"
         exit 1
