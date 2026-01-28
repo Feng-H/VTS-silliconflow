@@ -163,7 +163,13 @@ setup_keychain() {
     if [ "$CI_MODE" != "true" ]; then
         return
     fi
-    
+
+    # Check if certificate secret is available
+    if [ -z "$BUILD_CERTIFICATE_BASE64" ]; then
+        log_warning "No BUILD_CERTIFICATE_BASE64 secret found. Skipping keychain setup."
+        return
+    fi
+
     log_info "Setting up temporary keychain for CI..."
     
     # Create temporary keychain
