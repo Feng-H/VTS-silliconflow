@@ -54,3 +54,17 @@ VTS (Voice Typing Studio) is a macOS menu bar application for global voice dicta
 - **Entitlements**: `VTSApp.entitlements` defines App Sandbox and hardware access.
 - **Accessibility Reset**: When rebuilding locally, macOS may treat the app as new. Remove and re-add VTS in `System Settings > Privacy & Security > Accessibility` if text injection fails.
 - **Malware Safety**: This app uses Accessibility APIs to inject text. This is legitimate behavior for a dictation app but can be flagged by security tools.
+
+## Release & CI/CD Lessons Learned
+
+### Ad-hoc Signing & No-Certificate Release
+When releasing a macOS app without an Apple Developer Program membership ($99/year), specific workarounds are needed for CI/CD:
+
+1.  **Xcode Archive**: `xcodebuild archive` requires a development team. If none is available, force unsigned build args: `CODE_SIGN_IDENTITY= CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO`.
+2.  **Export**: `xcodebuild -exportArchive` fails without a valid Team ID even with manual/ad-hoc settings.
+    - **Fix**: Skip `xcodebuild -exportArchive` entirely. Manually `cp -R` the `.app` bundle from `.xcarchive/Products/Applications/` to the export directory.
+3.  **Ad-hoc Signing**: Use `codesign --force --deep -s - VTS.app` to apply a local ad-hoc signature. This allows the app to run (user may need to right-click -> Open).
+4.  **DMG Creation**: `sindresorhus/create-dmg` often fails in CI if no signing identity is found.
+    - **Fix**: Use native `hdiutil create` command instead. It's robust and doesn't require signing identities.
+5.  **Shell Scripting**: Be careful when capturing function output: `var=$(func)`. If `func` prints logs to `stdout`, they pollute the return value. Always redirect logs to `stderr` (`>&2`).
+6.  **Keychain**: In CI, skip `security create-keychain` if no certificate secret (`BUILD_CERTIFICATE_BASE64`) is present.
