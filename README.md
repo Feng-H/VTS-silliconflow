@@ -5,6 +5,28 @@
   <br>
   <strong>等待已久的 macOS 开源语音输入工具！🚀</strong>
 </p>
+
+---
+
+<p align="center">
+  <a href="https://github.com/Feng-H/VTS-silliconflow/releases/latest">
+    <img src="https://img.shields.io/badge/📦%20下载%20DMG-最新版本-brightgreen?style=for-the-badge&logo=apple&logoColor=white&labelColor=000000&color=007ACC" alt="下载 DMG" width="300">
+  </a>
+</p>
+
+<p align="center">
+  <strong>或者使用 Homebrew 安装：</strong>
+</p>
+
+```bash
+brew install Feng-H/tap/vts
+```
+
+> ⚠️ **安装提示**：由于本项目采用开源签名方式，首次打开时若提示 **“无法验证开发者”** 或 **“应用已损坏”**：
+> 1. 请将 VTS 拖入 **“应用程序” (Applications)** 文件夹
+> 2. 在“应用程序”中找到 VTS，**右键点击图标**，选择 **“打开”**
+> 3. 在弹出的对话框中点击 **“打开”** 即可
+
 ---
 
 利用 **SiliconFlow (硅基流动)** 和 **BigModel (智谱 AI)** 的强大能力，让你的声音瞬间变成文字。告别 macOS 自带听写的限制，体验闪电般快速、精准的转写体验，还支持自定义全局快捷键！⚡️
