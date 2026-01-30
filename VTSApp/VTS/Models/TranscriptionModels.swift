@@ -48,7 +48,7 @@ public enum STTProviderType: String, CaseIterable, Codable {
         switch self {
         case .siliconflow:
             // FunAudioLLM/SenseVoiceSmall is the verified model for the transcriptions endpoint
-            return ["FunAudioLLM/SenseVoiceSmall"]
+            return ["TeleAI/TeleSpeechASR", "FunAudioLLM/SenseVoiceSmall"]
         case .bigmodel:
             // glm-asr-2512 is the dedicated ASR model name
             return ["glm-asr-2512"]
