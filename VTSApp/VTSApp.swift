@@ -187,6 +187,7 @@ class AppState: ObservableObject {
     private let captureEngine = CaptureEngine()
     private let restTranscriptionService = RestTranscriptionService()
     private let streamingTranscriptionService = StreamingTranscriptionService()
+    private let textRefinementService = TextRefinementService()
     private let deviceManager = DeviceManager()
     private let apiKeyManager = APIKeyManager()
     private let hotkeyManager = SimpleHotkeyManager.shared
@@ -267,7 +268,11 @@ class AppState: ObservableObject {
     var streamingTranscriptionServiceInstance: StreamingTranscriptionService {
         return streamingTranscriptionService
     }
-    
+
+    var textRefinementServiceInstance: TextRefinementService {
+        return textRefinementService
+    }
+
     /// Returns the active transcription service based on current settings
     var activeTranscriptionService: Any {
         if useRealtime && selectedProvider.supportsRealtimeStreaming {
@@ -343,7 +348,13 @@ class AppState: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
-        
+
+        textRefinementService.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+
         captureEngine.objectWillChange
             .sink { [weak self] _ in
                 self?.objectWillChange.send()
@@ -476,6 +487,10 @@ class AppState: ObservableObject {
     }
     
     private func setupTranscriptionServices() {
+        // Inject refinement service dependency
+        restTranscriptionService.setRefinementService(textRefinementService)
+        streamingTranscriptionService.setRefinementService(textRefinementService)
+
         updateProvider()
 
         // Analytics callbacks removed

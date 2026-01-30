@@ -33,6 +33,7 @@ public class RestTranscriptionService: ObservableObject {
     @Published public var error: STTError?
 
     private var provider: RestSTTProvider?
+    private var refinementService: TextRefinementService?
     private var transcriptionTask: Task<Void, Never>?
     private let textInjector = TextInjector()
     private var lastInjectedText = ""
@@ -83,7 +84,11 @@ public class RestTranscriptionService: ObservableObject {
     public func setProvider(_ provider: RestSTTProvider) {
         self.provider = provider
     }
-    
+
+    public func setRefinementService(_ service: TextRefinementService) {
+        self.refinementService = service
+    }
+
     public func setTimingData(processStart: Date?, audioStart: Date?, audioEnd: Date?) {
         processStartTime = processStart
         audioRecordingStartTime = audioStart
@@ -143,10 +148,17 @@ public class RestTranscriptionService: ObservableObject {
                 // Trim whitespace
                 let finalText = transcriptionResult.trimmingCharacters(in: .whitespaces)
                 print("\(LogMessages.finalTextTrimmed) '\(finalText)'")
-                
+
+                // Refine text if enabled
+                var textToInject = finalText
+                if let refinementService = self.refinementService, refinementService.isRefinementEnabled {
+                    print("🎙️ RestTranscriptionService: Requesting text refinement...")
+                    textToInject = await refinementService.refine(finalText)
+                }
+
                 // Update UI and inject text
-                handleSuccessfulTranscription(finalText)
-                
+                handleSuccessfulTranscription(textToInject)
+
                 print(LogMessages.transcriptionCompleted)
 
                 // Track analytics
@@ -322,18 +334,25 @@ public class RestTranscriptionService: ObservableObject {
                 startTranscriptionTiming()
                 
                 let transcriptionResult = try await provider.transcribe(stream: audioStream, config: config)
-                
+
                 // Mark when retry transcription is complete
                 endTranscriptionTiming()
-                
+
                 let finalText = transcriptionResult.trimmingCharacters(in: .whitespaces)
-                
+
+                // Refine text if enabled
+                var textToInject = finalText
+                if let refinementService = self.refinementService, refinementService.isRefinementEnabled {
+                    print("🎙️ RestTranscriptionService: Requesting text refinement (retry)...")
+                    textToInject = await refinementService.refine(finalText)
+                }
+
                 // Handle the successful transcription
-                handleSuccessfulTranscription(finalText)
-                
-                let success = !finalText.isEmpty
+                handleSuccessfulTranscription(textToInject)
+
+                let success = !textToInject.isEmpty
                 if success {
-                    print("\(LogMessages.retrySuccess) '\(finalText)'")
+                    print("\(LogMessages.retrySuccess) '\(textToInject)'")
                 } else {
                     print(LogMessages.retryEmpty)
                 }

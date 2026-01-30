@@ -18,6 +18,10 @@ struct PreferencesView: View {
         appState.restTranscriptionServiceInstance
     }
 
+    private var refinementService: TextRefinementService {
+        appState.textRefinementServiceInstance
+    }
+
     private var deviceManager: DeviceManager {
         appState.deviceManagerService
     }
@@ -123,6 +127,54 @@ struct PreferencesView: View {
                             Text("Custom instructions help the AI understand your specific context, vocabulary, or domain expertise for better transcription accuracy.")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                        }
+                        .padding()
+                    }
+
+                    GroupBox("Intelligent Refinement") {
+                        VStack(alignment: .leading, spacing: 15) {
+                            Toggle("Enable Smart Refinement", isOn: Binding(
+                                get: { refinementService.isRefinementEnabled },
+                                set: { refinementService.isRefinementEnabled = $0 }
+                            ))
+                            .toggleStyle(.switch)
+
+                            if refinementService.isRefinementEnabled {
+                                Divider()
+
+                                Text("Refinement Prompt:")
+                                    .font(.headline)
+
+                                Text("The AI will use this prompt to refine your transcribed text.")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+
+                                ZStack(alignment: .topLeading) {
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color.primary.opacity(0.2), lineWidth: 1)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 6)
+                                                .fill(Color(NSColor.textBackgroundColor))
+                                        )
+
+                                    AutoScrollingTextEditor(text: Binding(
+                                        get: { refinementService.systemPrompt },
+                                        set: { refinementService.systemPrompt = $0 }
+                                    ))
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 6)
+                                    .frame(height: 80)
+                                }
+
+                                HStack {
+                                    Text("Model:")
+                                    TextField("Model Name", text: Binding(
+                                        get: { refinementService.selectedModel },
+                                        set: { refinementService.selectedModel = $0 }
+                                    ))
+                                    .textFieldStyle(.roundedBorder)
+                                }
+                            }
                         }
                         .padding()
                     }

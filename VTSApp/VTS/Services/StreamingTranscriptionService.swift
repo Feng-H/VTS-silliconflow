@@ -33,8 +33,9 @@ public class StreamingTranscriptionService: ObservableObject {
     // Real-time specific properties
     @Published public var partialResults: PartialResultsManager
     @Published public var isStreamingActive = false
-    
+
     private var provider: StreamingSTTProvider?
+    private var refinementService: TextRefinementService?
     private var transcriptionTask: Task<Void, Never>?
     private let textInjector = TextInjector()
     private var cancellables = Set<AnyCancellable>()
@@ -78,7 +79,11 @@ public class StreamingTranscriptionService: ObservableObject {
     public func setProvider(_ provider: StreamingSTTProvider) {
         self.provider = provider
     }
-    
+
+    public func setRefinementService(_ service: TextRefinementService) {
+        self.refinementService = service
+    }
+
     public func setTimingData(processStart: Date?, audioStart: Date?, audioEnd: Date?) {
         processStartTime = processStart
         audioRecordingStartTime = audioStart
@@ -269,18 +274,42 @@ public class StreamingTranscriptionService: ObservableObject {
                         // 🚀 IMMEDIATE TEXT INJECTION: Handle text injection as soon as we get final result
                         let finalTranscript = partialResults.getFinalTranscription()
                         if !finalTranscript.isEmpty {
-                            handleSuccessfulTranscription(finalTranscript)
-                            
-                            // Mark timing completion immediately 
-                            endTranscriptionTiming()
-                            
-                            // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
-                            isTranscribing = false
-                            isStreamingActive = false
-                            
-                            // 🔄 BACKGROUND CLEANUP: Start final cleanup and analytics in background
-                            Task.detached { [weak self] in
-                                await self?.performBackgroundCleanup(provider: self?.provider, config: self?.currentConfig)
+                            // Refine text if enabled
+                            var textToInject = finalTranscript
+                            if let refinementService = self?.refinementService, refinementService.isRefinementEnabled {
+                                print("🎙️ StreamingTranscriptionService: Requesting text refinement...")
+                                // Need to await, so we need to capture in Task
+                                let rawText = finalTranscript
+                                Task {
+                                    textToInject = await refinementService.refine(rawText)
+                                    self?.handleSuccessfulTranscription(textToInject)
+
+                                    // Mark timing completion immediately
+                                    self?.endTranscriptionTiming()
+
+                                    // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
+                                    self?.isTranscribing = false
+                                    self?.isStreamingActive = false
+
+                                    // 🔄 BACKGROUND CLEANUP: Start final cleanup and analytics in background
+                                    Task.detached { [weak self] in
+                                        await self?.performBackgroundCleanup(provider: self?.provider, config: self?.currentConfig)
+                                    }
+                                }
+                            } else {
+                                self?.handleSuccessfulTranscription(finalTranscript)
+
+                                // Mark timing completion immediately
+                                self?.endTranscriptionTiming()
+
+                                // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
+                                self?.isTranscribing = false
+                                self?.isStreamingActive = false
+
+                                // 🔄 BACKGROUND CLEANUP: Start final cleanup and analytics in background
+                                Task.detached { [weak self] in
+                                    await self?.performBackgroundCleanup(provider: self?.provider, config: self?.currentConfig)
+                                }
                             }
                         }
                     } else {
