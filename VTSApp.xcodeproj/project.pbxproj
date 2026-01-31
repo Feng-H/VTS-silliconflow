@@ -50,6 +50,8 @@
 		CA98AADF2E265823004C23D7 /* AudioLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA98AADE2E265823004C23D7 /* AudioLevelView.swift */; };
 		CAB662EB2E6EA3E4003C25AB /* AudioStreamingQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */; };
 		CADFFC2B2E3DFEFC00C29988 /* LaunchAtLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */; };
+		CA5A14312E3CADD900C01C44 /* TextRefinementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14302E3CADD900C01C44 /* TextRefinementService.swift */; };
+		CA5A14332E3CADD900C01C44 /* BaseNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +100,8 @@
 		CAA9631B2E5C40DE00FA11A0 /* OnboardingAnalyticsStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAnalyticsStep.swift; sourceTree = "<group>"; };
 		CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStreamingQueue.swift; sourceTree = "<group>"; };
 		CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
+		CA5A14302E3CADD900C01C44 /* TextRefinementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRefinementService.swift; sourceTree = "<group>"; };
+		CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -183,6 +187,7 @@
 				CA28365F2E69561900CA59D7 /* StreamingTranscriptionService.swift */,
 				CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */,
 				CA5A14102E3CAD7500C01C44 /* OnboardingManager.swift */,
+				CA5A14302E3CADD900C01C44 /* TextRefinementService.swift */,
 				CA4830A62E2B85700085EEF7 /* NotificationManager.swift */,
 				1A8E3D3F1C8F4E1C00123457 /* CaptureEngine.swift */,
 				1A8E3D401C8F4E1C00123458 /* DeviceManager.swift */,
@@ -194,6 +199,7 @@
 		1A8E3D511C8F4E1C00123468 /* Providers */ = {
 			isa = PBXGroup;
 			children = (
+				CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */,
 				185D1BBA2F28E32100DAC744 /* BigModelProvider.swift */,
 				185D1BBB2F28E32100DAC744 /* SiliconFlowProvider.swift */,
 				CA2836642E69562A00CA59D7 /* BaseRestSTTProvider.swift */,
@@ -385,6 +391,8 @@
 				CA5A14222E3CADD900C01C44 /* OnboardingAPIKeyStep.swift in Sources */,
 				CA4830AD2E2B859F0085EEF7 /* RetryContext.swift in Sources */,
 				1A8E3D471C8F4E1C00123464 /* AsyncExtensions.swift in Sources */,
+				CA5A14312E3CADD900C01C44 /* TextRefinementService.swift in Sources */,
+				CA5A14332E3CADD900C01C44 /* BaseNetworkProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,7 +559,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"VTSApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 887583966J;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = 3H34K4P363;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = VTSApp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
