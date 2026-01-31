@@ -24,14 +24,16 @@ public struct TranscriptionResult {
 
 public struct ProviderConfig {
     public let apiKey: String
+    public let baseUrl: String?
     public let model: String
     public let systemPrompt: String?
     public let language: String?
     public let temperature: Float?
     public let keywords: [String]?
-    
-    public init(apiKey: String, model: String, systemPrompt: String? = nil, language: String? = nil, temperature: Float? = nil, keywords: [String]? = nil) {
+
+    public init(apiKey: String, baseUrl: String? = nil, model: String, systemPrompt: String? = nil, language: String? = nil, temperature: Float? = nil, keywords: [String]? = nil) {
         self.apiKey = apiKey
+        self.baseUrl = baseUrl
         self.model = model
         self.systemPrompt = systemPrompt
         self.language = language
@@ -43,6 +45,7 @@ public struct ProviderConfig {
 public enum STTProviderType: String, CaseIterable, Codable {
     case siliconflow = "SiliconFlow"
     case bigmodel = "BigModel"
+    case openai = "OpenAI"
 
     public var restModels: [String] {
         switch self {
@@ -52,6 +55,8 @@ public enum STTProviderType: String, CaseIterable, Codable {
         case .bigmodel:
             // glm-asr-2512 is the dedicated ASR model name
             return ["glm-asr-2512"]
+        case .openai:
+            return ["whisper-1"]
         }
     }
 
@@ -59,6 +64,8 @@ public enum STTProviderType: String, CaseIterable, Codable {
         switch self {
         case .siliconflow, .bigmodel:
             return [] // Future support
+        case .openai:
+            return ["gpt-4o-realtime-preview"]
         }
     }
 

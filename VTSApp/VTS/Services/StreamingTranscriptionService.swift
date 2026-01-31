@@ -276,20 +276,20 @@ public class StreamingTranscriptionService: ObservableObject {
                         if !finalTranscript.isEmpty {
                             // Refine text if enabled
                             var textToInject = finalTranscript
-                            if let refinementService = self?.refinementService, refinementService.isRefinementEnabled {
+                            if let refinementService = self.refinementService, refinementService.isRefinementEnabled {
                                 print("🎙️ StreamingTranscriptionService: Requesting text refinement...")
                                 // Need to await, so we need to capture in Task
                                 let rawText = finalTranscript
                                 Task {
                                     textToInject = await refinementService.refine(rawText)
-                                    self?.handleSuccessfulTranscription(textToInject)
+                                    self.handleSuccessfulTranscription(textToInject)
 
                                     // Mark timing completion immediately
-                                    self?.endTranscriptionTiming()
+                                    self.endTranscriptionTiming()
 
                                     // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
-                                    self?.isTranscribing = false
-                                    self?.isStreamingActive = false
+                                    self.isTranscribing = false
+                                    self.isStreamingActive = false
 
                                     // 🔄 BACKGROUND CLEANUP: Start final cleanup and analytics in background
                                     Task.detached { [weak self] in
@@ -297,14 +297,14 @@ public class StreamingTranscriptionService: ObservableObject {
                                     }
                                 }
                             } else {
-                                self?.handleSuccessfulTranscription(finalTranscript)
+                                self.handleSuccessfulTranscription(finalTranscript)
 
                                 // Mark timing completion immediately
-                                self?.endTranscriptionTiming()
+                                self.endTranscriptionTiming()
 
                                 // 🎯 IMMEDIATE UI UPDATE: Update transcription state immediately after text injection
-                                self?.isTranscribing = false
-                                self?.isStreamingActive = false
+                                self.isTranscribing = false
+                                self.isStreamingActive = false
 
                                 // 🔄 BACKGROUND CLEANUP: Start final cleanup and analytics in background
                                 Task.detached { [weak self] in

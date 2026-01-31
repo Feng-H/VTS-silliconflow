@@ -16,13 +16,13 @@ public class OpenAICompatibleRefinementProvider: BaseNetworkProvider, TextRefine
         guard !config.apiKey.isEmpty else {
             throw STTError.invalidConfig("API key is missing")
         }
-        guard let _ = URL(string: config.baseUrl) else {
+        guard let urlString = config.baseUrl, !urlString.isEmpty, let _ = URL(string: urlString) else {
             throw STTError.invalidConfig("Invalid API URL")
         }
     }
 
     public func refine(text: String, systemPrompt: String, config: ProviderConfig) async throws -> String {
-        guard let url = URL(string: config.baseUrl) else {
+        guard let urlString = config.baseUrl, !urlString.isEmpty, let url = URL(string: urlString) else {
             throw STTError.invalidConfig("Invalid API URL")
         }
 

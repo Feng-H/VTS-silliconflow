@@ -146,6 +146,22 @@ public struct ErrorTranslator {
                     needsSettings: false
                 )
             }
+            
+        case .invalidConfig(let details):
+            return ErrorTranslation(
+                message: "Configuration Error",
+                hint: details,
+                canRetry: false,
+                needsSettings: true
+            )
+            
+        case .decodingError(let details):
+            return ErrorTranslation(
+                message: "Processing Error",
+                hint: "Failed to process server response. \(details)",
+                canRetry: true,
+                needsSettings: false
+            )
         }
     }
     
@@ -162,6 +178,10 @@ public struct ErrorTranslator {
             return "Audio processing error"
         case .transcriptionError:
             return "Transcription error"
+        case .invalidConfig:
+            return "Configuration error"
+        case .decodingError:
+            return "Decoding error"
         }
     }
 }

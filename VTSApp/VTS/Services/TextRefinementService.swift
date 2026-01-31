@@ -34,8 +34,8 @@ public class TextRefinementService: ObservableObject {
         // Try to get SiliconFlow key first
         if let key = try? apiKeyManager.getAPIKey(for: .siliconflow) {
             return ProviderConfig(
-                baseUrl: "https://api.siliconflow.cn/v1/chat/completions",
                 apiKey: key,
+                baseUrl: "https://api.siliconflow.cn/v1/chat/completions",
                 model: selectedModel
             )
         }
@@ -43,8 +43,8 @@ public class TextRefinementService: ObservableObject {
         // Fallback to OpenAI if available
         if let key = try? apiKeyManager.getAPIKey(for: .openai) {
             return ProviderConfig(
-                baseUrl: "https://api.openai.com/v1/chat/completions",
                 apiKey: key,
+                baseUrl: "https://api.openai.com/v1/chat/completions",
                 model: "gpt-3.5-turbo" // Fallback model
             )
         }

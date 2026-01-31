@@ -200,8 +200,10 @@ struct OnboardingAPIKeyStep: View {
             url = URL(string: "https://cloud.siliconflow.cn/account/ak")
         case .bigmodel:
             url = URL(string: "https://open.bigmodel.cn/usercenter/apikeys")
+        case .openai:
+            url = URL(string: "https://platform.openai.com/api-keys")
         }
-        
+
         if let url = url {
             NSWorkspace.shared.open(url)
         }
@@ -298,6 +300,8 @@ extension STTProviderType {
             return .purple
         case .bigmodel:
             return .indigo
+        case .openai:
+            return .green
         }
     }
 
@@ -307,6 +311,8 @@ extension STTProviderType {
             return "High-performance model inference platform"
         case .bigmodel:
             return "Zhipu AI's powerful GLM-4 models"
+        case .openai:
+            return "Industry standard GPT models"
         }
     }
 
@@ -316,6 +322,8 @@ extension STTProviderType {
             return "Competitive pricing with free tier options"
         case .bigmodel:
             return "Pay-per-token with generous free tier"
+        case .openai:
+            return "Pay as you go pricing"
         }
     }
 
@@ -325,6 +333,8 @@ extension STTProviderType {
             return "Fast inference on high-end GPUs"
         case .bigmodel:
             return "Optimized for low latency responses"
+        case .openai:
+            return "Variable speed depending on model"
         }
     }
 
@@ -334,6 +344,8 @@ extension STTProviderType {
             return "State-of-the-art open source models"
         case .bigmodel:
             return "Leading Chinese/English bilingual performance"
+        case .openai:
+            return "High accuracy and instruction following"
         }
     }
 }

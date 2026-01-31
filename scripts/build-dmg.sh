@@ -234,7 +234,7 @@ build_app() {
         -scheme "$SCHEME" \
         -configuration Release \
         -archivePath "build/$APP_NAME.xcarchive" \
-        ARCHS="arm64 x86_64" \
+        ARCHS="arm64" \
         ONLY_ACTIVE_ARCH=NO \
         $team_args \
         $signing_args \
