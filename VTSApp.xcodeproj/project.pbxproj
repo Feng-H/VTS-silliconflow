@@ -52,6 +52,8 @@
 		CADFFC2B2E3DFEFC00C29988 /* LaunchAtLoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */; };
 		CA5A14312E3CADD900C01C44 /* TextRefinementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14302E3CADD900C01C44 /* TextRefinementService.swift */; };
 		CA5A14332E3CADD900C01C44 /* BaseNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */; };
+		CA5A14342E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14352E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift */; };
+		CA5A14362E3CADD900C01C44 /* TextRefinementProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14372E3CADD900C01C44 /* TextRefinementProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,8 +102,10 @@
 		CAA9631B2E5C40DE00FA11A0 /* OnboardingAnalyticsStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingAnalyticsStep.swift; sourceTree = "<group>"; };
 		CAB662EA2E6EA3E4003C25AB /* AudioStreamingQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioStreamingQueue.swift; sourceTree = "<group>"; };
 		CADFFC2A2E3DFEFC00C29988 /* LaunchAtLoginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginManager.swift; sourceTree = "<group>"; };
-		CA5A14302E3CADD900C01C44 /* TextRefinementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRefinementService.swift; sourceTree = "<group>"; };
-		CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkProvider.swift; sourceTree = "<group>"; };
+		CA5A14302E3CADD900C01C44 /* TextRefinementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Services/TextRefinementService.swift; sourceTree = SOURCE_ROOT; };
+		CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Providers/BaseNetworkProvider.swift; sourceTree = SOURCE_ROOT; };
+		CA5A14352E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Providers/OpenAICompatibleRefinementProvider.swift; sourceTree = SOURCE_ROOT; };
+		CA5A14372E3CADD900C01C44 /* TextRefinementProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Protocols/TextRefinementProvider.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -200,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */,
+				CA5A14352E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift */,
 				185D1BBA2F28E32100DAC744 /* BigModelProvider.swift */,
 				185D1BBB2F28E32100DAC744 /* SiliconFlowProvider.swift */,
 				CA2836642E69562A00CA59D7 /* BaseRestSTTProvider.swift */,
@@ -213,6 +218,7 @@
 			children = (
 				CA2836702E69563D00CA59D7 /* RestSTTProvider.swift */,
 				CA2836712E69563D00CA59D7 /* StreamingSTTProvider.swift */,
+				CA5A14372E3CADD900C01C44 /* TextRefinementProvider.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -393,6 +399,8 @@
 				1A8E3D471C8F4E1C00123464 /* AsyncExtensions.swift in Sources */,
 				CA5A14312E3CADD900C01C44 /* TextRefinementService.swift in Sources */,
 				CA5A14332E3CADD900C01C44 /* BaseNetworkProvider.swift in Sources */,
+				CA5A14342E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift in Sources */,
+				CA5A14362E3CADD900C01C44 /* TextRefinementProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,7 +545,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app.debug.23;
 				PRODUCT_NAME = VTS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -568,7 +576,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 1.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app;
 				PRODUCT_NAME = VTS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
