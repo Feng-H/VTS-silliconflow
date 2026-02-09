@@ -86,6 +86,22 @@ struct PreferencesView: View {
                                 }
                             }
 
+                            // Language Selection
+                            HStack {
+                                Text("Language:")
+                                    .frame(width: 120, alignment: .leading)
+
+                                Picker("", selection: Binding(
+                                    get: { LanguageSettingsManager.shared.selectedLanguage },
+                                    set: { LanguageSettingsManager.shared.selectedLanguage = $0 }
+                                )) {
+                                    ForEach(RecognitionLanguage.allCases, id: \.self) { language in
+                                        Text(language.displayName).tag(language)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                            }
+
                             // Custom Instructions
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -668,6 +684,45 @@ struct PreferencesView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
+                    GroupBox("Filler Word Filter") {
+                        VStack(alignment: .leading, spacing: 15) {
+                            Toggle("Enable Filler Word Removal", isOn: Binding(
+                                get: { FillerWordFilter.isEnabled },
+                                set: { FillerWordFilter.isEnabled = $0 }
+                            ))
+                            .toggleStyle(.switch)
+
+                            Text("Automatically removes common filler words like \"um\", \"uh\", \"那个\", \"额\" from transcriptions before text refinement.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+
+                            if FillerWordFilter.isEnabled {
+                                Divider()
+
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Aggressiveness Level")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+
+                                    Picker("", selection: Binding(
+                                        get: { FillerWordFilter.aggressiveness },
+                                        set: { FillerWordFilter.aggressiveness = $0 }
+                                    )) {
+                                        Text("Minimal").tag(0)
+                                        Text("Moderate").tag(1)
+                                        Text("Aggressive").tag(2)
+                                    }
+                                    .pickerStyle(.segmented)
+
+                                    Text(fillerFilterDescription)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .padding()
+                    }
+
                     GroupBox("Onboarding") {
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Reset the first-time setup experience")
@@ -681,6 +736,59 @@ struct PreferencesView: View {
                                 OnboardingManager.shared.resetOnboarding()
                             }
                             .buttonStyle(.bordered)
+                        }
+                        .padding()
+                    }
+
+                    GroupBox("Privacy & Data") {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Image(systemName: "lock.shield.fill")
+                                    .foregroundColor(.green)
+                                    .font(.title2)
+                                Text("Your Privacy is Protected")
+                                    .font(.headline)
+                            }
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                        .font(.caption)
+                                    Text("VTS does not store your voice recordings or transcriptions")
+                                        .font(.subheadline)
+                                }
+
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                        .font(.caption)
+                                    Text("Audio is processed only through your configured API provider")
+                                        .font(.subheadline)
+                                }
+
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                        .font(.caption)
+                                    Text("API keys are stored securely in your macOS Keychain")
+                                        .font(.subheadline)
+                                }
+
+                                HStack(alignment: .top, spacing: 8) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                        .font(.caption)
+                                    Text("No analytics or telemetry data is collected")
+                                        .font(.subheadline)
+                                }
+                            }
+
+                            Divider()
+
+                            Text("All speech recognition is handled by your chosen API provider (OpenAI, Groq, SiliconFlow, etc.). Please review your provider's privacy policy for their data handling practices.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
                         .padding()
                     }
@@ -738,6 +846,17 @@ struct PreferencesView: View {
             return .orange
         } else {
             return .secondary
+        }
+    }
+
+    private var fillerFilterDescription: String {
+        switch FillerWordFilter.aggressiveness {
+        case 0:
+            return "Removes only obvious hesitation sounds (um, uh, 额, 嗯)"
+        case 1:
+            return "Removes common filler words and phrases"
+        default:
+            return "Removes all detected filler words including discourse markers"
         }
     }
 }

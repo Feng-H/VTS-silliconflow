@@ -68,8 +68,24 @@ public class TextRefinementService: ObservableObject {
     /// Refines the given text if enabled and configured
     /// Returns the original text if refinement is disabled or fails
     public func refine(_ text: String) async -> String {
-        guard isRefinementEnabled, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return text
+        }
+
+        var processedText = text
+
+        // Step 1: Apply lightweight filler word filter (always runs if enabled)
+        if FillerWordFilter.isEnabled {
+            let beforeFilter = processedText
+            processedText = FillerWordFilter.filter(processedText)
+            if processedText != beforeFilter {
+                print("🧹 TextRefinementService: Filler words removed: '\(beforeFilter)' -> '\(processedText)'")
+            }
+        }
+
+        // Step 2: If LLM refinement is disabled, return after filler filter
+        guard isRefinementEnabled else {
+            return processedText
         }
 
         guard let config = refinementConfig else {

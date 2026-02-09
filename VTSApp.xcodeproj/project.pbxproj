@@ -54,6 +54,12 @@
 		CA5A14332E3CADD900C01C44 /* BaseNetworkProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */; };
 		CA5A14342E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14352E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift */; };
 		CA5A14362E3CADD900C01C44 /* TextRefinementProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5A14372E3CADD900C01C44 /* TextRefinementProvider.swift */; };
+		CA140001F140000100000001 /* FillerWordFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA140002F140000100000001 /* FillerWordFilter.swift */; };
+		CA140003F140000100000002 /* VoiceCommandProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA140004F140000100000002 /* VoiceCommandProcessor.swift */; };
+		CA140005F140000100000003 /* ContextAwareRefinementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA140006F140000100000003 /* ContextAwareRefinementService.swift */; };
+		CA140007F140000100000004 /* DictationHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA140008F140000100000004 /* DictationHistoryService.swift */; };
+		CA140009F140000100000005 /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA14000AF140000100000005 /* LanguageSettings.swift */; };
+		CA14000BF140000100000006 /* CustomDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA14000CF140000100000006 /* CustomDictionary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +112,12 @@
 		CA5A14322E3CADD900C01C44 /* BaseNetworkProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Providers/BaseNetworkProvider.swift; sourceTree = SOURCE_ROOT; };
 		CA5A14352E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Providers/OpenAICompatibleRefinementProvider.swift; sourceTree = SOURCE_ROOT; };
 		CA5A14372E3CADD900C01C44 /* TextRefinementProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSApp/VTS/Protocols/TextRefinementProvider.swift; sourceTree = SOURCE_ROOT; };
+		CA140002F140000100000001 /* FillerWordFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FillerWordFilter.swift; sourceTree = "<group>"; };
+		CA140004F140000100000002 /* VoiceCommandProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCommandProcessor.swift; sourceTree = "<group>"; };
+		CA140006F140000100000003 /* ContextAwareRefinementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextAwareRefinementService.swift; sourceTree = "<group>"; };
+		CA140008F140000100000004 /* DictationHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictationHistoryService.swift; sourceTree = "<group>"; };
+		CA14000AF140000100000005 /* LanguageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettings.swift; sourceTree = "<group>"; };
+		CA14000CF140000100000006 /* CustomDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDictionary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -196,6 +208,10 @@
 				1A8E3D3F1C8F4E1C00123457 /* CaptureEngine.swift */,
 				1A8E3D401C8F4E1C00123458 /* DeviceManager.swift */,
 				CA98AAD32E24E862004C23D7 /* TextInjector.swift */,
+				CA140002F140000100000001 /* FillerWordFilter.swift */,
+				CA140004F140000100000002 /* VoiceCommandProcessor.swift */,
+				CA140006F140000100000003 /* ContextAwareRefinementService.swift */,
+				CA140008F140000100000004 /* DictationHistoryService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -230,6 +246,8 @@
 				CA2836752E69564800CA59D7 /* StreamingModels.swift */,
 				CA4830AC2E2B859C0085EEF7 /* RetryContext.swift */,
 				1A8E3D451C8F4E1C00123463 /* TranscriptionModels.swift */,
+				CA14000AF140000100000005 /* LanguageSettings.swift */,
+				CA14000CF140000100000006 /* CustomDictionary.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -401,6 +419,12 @@
 				CA5A14332E3CADD900C01C44 /* BaseNetworkProvider.swift in Sources */,
 				CA5A14342E3CADD900C01C44 /* OpenAICompatibleRefinementProvider.swift in Sources */,
 				CA5A14362E3CADD900C01C44 /* TextRefinementProvider.swift in Sources */,
+				CA140001F140000100000001 /* FillerWordFilter.swift in Sources */,
+				CA140003F140000100000002 /* VoiceCommandProcessor.swift in Sources */,
+				CA140005F140000100000003 /* ContextAwareRefinementService.swift in Sources */,
+				CA140007F140000100000004 /* DictationHistoryService.swift in Sources */,
+				CA140009F140000100000005 /* LanguageSettings.swift in Sources */,
+				CA14000BF140000100000006 /* CustomDictionary.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,7 +570,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app.debug.23;
 				PRODUCT_NAME = VTS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -577,7 +601,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.3.3;
+				MARKETING_VERSION = 1.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app;
 				PRODUCT_NAME = VTS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
