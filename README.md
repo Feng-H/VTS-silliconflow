@@ -118,6 +118,13 @@ brew update && brew upgrade vts
 
 - **无法输入文字？**
   - 请检查 **系统设置 > 隐私与安全性 > 辅助功能**，确保 VTS 已开启。如果已经开启但无效，请尝试删除后重新添加。
+  - **重要提示**：除了系统级别的辅助功能权限，还需要在 VTS 应用内确认权限状态。打开 VTS 设置 > **Permissions** 页面，确保 **Accessibility Access** 显示为绿色勾选状态（如下图所示）：
+
+  <p align="center">
+    <img src="public/permissions-screenshot.png" alt="VTS 权限设置截图" width="500">
+  </p>
+
+  > 💡 如果 Accessibility Access 未显示为已授权，点击旁边的 "Debug" 按钮可以帮助诊断问题。
 - **听不到声音/没反应？**
   - 检查 **系统设置 > 隐私与安全性 > 麦克风** 权限是否已授予。
   - 在 VTS 设置的麦克风选项卡中点击"刷新"，确保选中了正确的设备。
