@@ -570,7 +570,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app.debug.23;
 				PRODUCT_NAME = VTS;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -601,7 +601,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.4.0;
+				MARKETING_VERSION = 1.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voicetypestudio.app;
 				PRODUCT_NAME = VTS;
 				SWIFT_EMIT_LOC_STRINGS = YES;

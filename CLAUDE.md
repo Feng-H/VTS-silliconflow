@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Open in Xcode**: `open VTSApp.xcodeproj`
 - **Run**: Best run via Xcode (CMD+R) due to microphone permissions, accessibility API access, and entitlement signing.
 - **Clean**: `xcodebuild clean -project VTSApp.xcodeproj -scheme VTSApp`
-- **Dependencies**: Managed via Swift Package Manager in `Package.swift` (KeychainAccess, KeyboardShortcuts, Sparkle).
+- **Dependencies**: Managed via Swift Package Manager in `Package.swift` (KeychainAccess, KeyboardShortcuts).
 
 ## Architecture
 
@@ -38,9 +38,14 @@ VTS (Voice Typing Studio) is a macOS menu bar application for global voice dicta
 ### Data & Services
 - **KeychainAccess**: Secure storage for API keys.
 - **UserDefaults**: Application preferences.
-- **AnalyticsService**: Manages privacy-aware telemetry.
-- **SparkleUpdaterManager**: Handles app updates.
 - **ModifierKeyMonitor**: Monitors modifier keys for shortcuts.
+
+### v1.4.0 New Features (Pending UI Integration)
+- **DictationHistoryService**: Manages dictation history storage and retrieval.
+- **ContextAwareRefinementService**: Provides context-aware text refinement.
+- **VoiceCommandProcessor**: Processes voice commands during dictation.
+- **CustomDictionary**: Custom vocabulary management for better transcription accuracy.
+- **FillerWordFilter**: Filters filler words from transcription output.
 
 ## Testing
 
