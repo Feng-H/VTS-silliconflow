@@ -7,6 +7,8 @@ public class OnboardingManager: ObservableObject {
     
     @Published public var isOnboardingCompleted = false
     @Published public var currentStep: OnboardingStep = .welcome
+    @Published public var needsPermissionRepair = false
+    @Published public var missingSteps: [OnboardingStep] = []
     
     private let userDefaults = UserDefaults.standard
     private let onboardingCompletedKey = "onboardingCompleted"
@@ -19,25 +21,67 @@ public class OnboardingManager: ObservableObject {
         isOnboardingCompleted = userDefaults.bool(forKey: onboardingCompletedKey)
     }
     
+    public func checkPermissions(with appState: AppState) {
+        // Accessibility is critical for VTS to work
+        let hasAccessibility = appState.restTranscriptionServiceInstance.injector.hasAccessibilityPermission
+        let hasMic = appState.captureEngineService.permissionGranted
+        
+        var missing: [OnboardingStep] = []
+        if !hasMic { missing.append(.microphone) }
+        if !hasAccessibility { missing.append(.accessibility) }
+        
+        self.missingSteps = missing
+        
+        // If onboarding was completed but permissions are gone, we need repair
+        if isOnboardingCompleted && !missing.isEmpty {
+            self.needsPermissionRepair = true
+            // Set current step to the first missing one
+            if let firstMissing = missing.first {
+                self.currentStep = firstMissing
+            }
+        } else {
+            self.needsPermissionRepair = false
+        }
+    }
+    
     public func completeOnboarding() {
         isOnboardingCompleted = true
+        needsPermissionRepair = false
         userDefaults.set(true, forKey: onboardingCompletedKey)
         print("🎉 Onboarding completed successfully!")
     }
     
     public func resetOnboarding() {
         isOnboardingCompleted = false
+        needsPermissionRepair = false
         currentStep = .welcome
         userDefaults.removeObject(forKey: onboardingCompletedKey)
         print("🔄 Onboarding reset - will show on next app launch")
     }
     
     public func nextStep() {
-        currentStep = currentStep.next()
+        if needsPermissionRepair {
+            // In repair mode, move to next missing step or complete
+            if let currentIndex = missingSteps.firstIndex(of: currentStep),
+               currentIndex < missingSteps.count - 1 {
+                currentStep = missingSteps[currentIndex + 1]
+            } else {
+                completeOnboarding()
+            }
+        } else {
+            currentStep = currentStep.next()
+        }
     }
     
     public func previousStep() {
-        currentStep = currentStep.previous()
+        if needsPermissionRepair {
+            if let currentIndex = missingSteps.firstIndex(of: currentStep),
+               currentIndex > 0 {
+                currentStep = missingSteps[currentIndex - 1]
+            }
+        } else {
+            currentStep = currentStep.previous()
+        }
     }
 }
 
@@ -96,7 +140,7 @@ public enum OnboardingStep: Int, CaseIterable {
         case .apiKey:
             return "Connect your AI provider for transcription"
         case .accessibility:
-            return "Optional: Auto-insert text into apps"
+            return "Required for automatic text insertion"
         case .notifications:
             return "Stay informed about transcription status"
         case .test:
@@ -108,7 +152,7 @@ public enum OnboardingStep: Int, CaseIterable {
     
     public var isOptional: Bool {
         switch self {
-        case .accessibility:
+        case .notifications:
             return true
         default:
             return false
@@ -122,6 +166,8 @@ public enum OnboardingStep: Int, CaseIterable {
             return appState.captureEngineService.permissionGranted
         case .apiKey:
             return appState.apiKeyManagerService.hasAPIKey(for: appState.selectedProvider)
+        case .accessibility:
+            return appState.restTranscriptionServiceInstance.injector.hasAccessibilityPermission
         default:
             return true
         }
@@ -135,6 +181,8 @@ public enum OnboardingStep: Int, CaseIterable {
                 return "Microphone permission is required to continue"
             case .apiKey:
                 return "API key setup is required to continue"
+            case .accessibility:
+                return "Accessibility permission is required for auto-insertion"
             default:
                 return nil
             }

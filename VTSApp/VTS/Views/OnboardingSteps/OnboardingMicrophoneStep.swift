@@ -4,6 +4,7 @@ import Combine
 
 struct OnboardingMicrophoneStep: View {
     @ObservedObject var appState: AppState
+    @EnvironmentObject var onboardingManager: OnboardingManager
     @State private var showingPermissionAlert = false
     @State private var animateIcon = false
     
@@ -27,11 +28,13 @@ struct OnboardingMicrophoneStep: View {
                         .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: animateIcon)
                 }
                 
-                Text("Microphone Access")
+                Text(onboardingManager.needsPermissionRepair ? "Repair Microphone Access" : "Microphone Access")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
-                Text("VTS needs access to your microphone to record audio for speech-to-text transcription")
+                Text(onboardingManager.needsPermissionRepair ?
+                     "Microphone access has been lost. Please re-enable it to continue using voice transcription." :
+                     "VTS needs access to your microphone to record audio for speech-to-text transcription")
                     .font(.title3)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -140,6 +143,9 @@ struct OnboardingMicrophoneStep: View {
     }
     
     private var microphoneColor: Color {
+        if onboardingManager.needsPermissionRepair && captureEngine.permissionStatus != .authorized {
+            return .orange
+        }
         switch captureEngine.permissionStatus {
         case .authorized:
             return .green

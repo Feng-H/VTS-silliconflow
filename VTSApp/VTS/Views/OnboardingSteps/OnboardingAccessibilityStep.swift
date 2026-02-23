@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingAccessibilityStep: View {
     @ObservedObject var appState: AppState
+    @EnvironmentObject var onboardingManager: OnboardingManager
     @State private var hasPermission = false
     @State private var animateIcon = false
     
@@ -28,12 +29,14 @@ struct OnboardingAccessibilityStep: View {
                 }
                 
                 HStack {
-                    Text("Text Insertion Access")
+                    Text(onboardingManager.needsPermissionRepair ? "Repair Accessibility Access" : "Text Insertion Access")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                 }
                 
-                Text("Enable automatic text insertion to seamlessly add transcribed text into any application")
+                Text(onboardingManager.needsPermissionRepair ? 
+                     "macOS often resets Accessibility permissions after updates. Please toggle VTS off and on, or remove and re-add it." :
+                     "Enable automatic text insertion to seamlessly add transcribed text into any application")
                     .font(.title3)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -47,45 +50,48 @@ struct OnboardingAccessibilityStep: View {
                     hasPermission: hasPermission,
                     title: "Accessibility Permission",
                     grantedMessage: "✅ Accessibility access granted! Text will be automatically inserted into applications.",
-                    deniedMessage: "⚠️ Accessibility access not enabled. You can still copy transcriptions manually.",
+                    deniedMessage: "⚠️ Accessibility access not enabled. Auto-insertion will not work.",
                     color: accessibilityColor
                 )
                 
-                // Benefits explanation
+                // Important fix instructions
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("How automatic text insertion works:")
+                    Text("💡 How to fix 'Granted but not working':")
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     VStack(alignment: .leading, spacing: 12) {
+                        Text("If VTS is already enabled in settings but still doesn't insert text:")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
                         BenefitRow(
-                            icon: "1.circle.fill",
-                            title: "Record your voice",
-                            description: "Press your global hotkey and speak"
+                            icon: "1.minus.circle.fill",
+                            title: "Remove from list",
+                            description: "Select VTS in System Settings and click the '-' button."
                         )
                         BenefitRow(
-                            icon: "2.circle.fill",
-                            title: "AI transcribes instantly",
-                            description: "Your speech is converted to text in real-time"
-                        )
-                        BenefitRow(
-                            icon: "3.circle.fill",
-                            title: "Text appears automatically",
-                            description: "Transcribed text is inserted directly where you're typing"
+                            icon: "2.plus.circle.fill",
+                            title: "Re-add the app",
+                            description: "Click '+' and select VTS from your Applications folder."
                         )
                     }
                 }
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(NSColor.controlBackgroundColor))
+                        .fill(Color.orange.opacity(0.05))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.orange.opacity(0.2), lineWidth: 1)
+                        )
                 )
                 
                 // Action buttons
                 VStack(spacing: 12) {
-                    if !hasPermission {
+                    if !hasPermission || onboardingManager.needsPermissionRepair {
                         Button(action: requestAccessibilityPermission) {
-                            Label("Grant Accessibility Access", systemImage: "text.insert")
+                            Label("Open Accessibility Settings", systemImage: "text.insert")
                                 .font(.headline)
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 30)
@@ -97,31 +103,11 @@ struct OnboardingAccessibilityStep: View {
                         }
                         .buttonStyle(.plain)
                         
-                        Text("This will open System Settings where you can enable VTS in Privacy & Security > Accessibility")
+                        Text("Find 'VTS' in the list. If it's already there, toggle it OFF and ON again.")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                     }
-                    
-                    VStack(spacing: 8) {
-                        Text("Without accessibility access:")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                        
-                        Text("• You can still use VTS for voice transcription\n• Transcribed text can be copied to clipboard\n• You'll need to paste manually with ⌘V")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding(16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.orange.opacity(0.1))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.orange.opacity(0.3), lineWidth: 1)
-                            )
-                    )
                 }
             }
             .frame(maxWidth: 600)
@@ -150,86 +136,4 @@ struct OnboardingAccessibilityStep: View {
     private func requestAccessibilityPermission() {
         textInjector.requestAccessibilityPermission()
     }
-}
-
-struct BenefitRow: View {
-    let icon: String
-    let title: String
-    let description: String
-    
-    var body: some View {
-        HStack(alignment: .top, spacing: 16) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(.blue)
-                .frame(width: 30)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                
-                Text(description)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-        }
-    }
-}
-
-// Reusable permission status card for accessibility
-struct AccessibilityPermissionCard: View {
-    let hasPermission: Bool
-    let title: String
-    let grantedMessage: String
-    let deniedMessage: String
-    let color: Color
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: statusIcon)
-                .font(.title)
-                .foregroundColor(statusColor)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                
-                Text(statusMessage)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-        }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(statusColor.opacity(0.1))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(statusColor.opacity(0.3), lineWidth: 1)
-                )
-        )
-    }
-    
-    private var statusIcon: String {
-        hasPermission ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
-    }
-    
-    private var statusColor: Color {
-        hasPermission ? .green : color
-    }
-    
-    private var statusMessage: String {
-        hasPermission ? grantedMessage : deniedMessage
-    }
-}
-
-#Preview {
-    OnboardingAccessibilityStep(appState: AppState())
-        .frame(width: 800, height: 600)
 }

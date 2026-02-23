@@ -19,7 +19,7 @@ struct VTSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if !onboardingManager.isOnboardingCompleted {
+            if !onboardingManager.isOnboardingCompleted || onboardingManager.needsPermissionRepair {
                 OnboardingView(appState: appState)
                     .environmentObject(onboardingManager)
                     .onReceive(onboardingManager.$isOnboardingCompleted) { completed in
@@ -37,6 +37,10 @@ struct VTSApp: App {
                     .frame(width: 0, height: 0)
                     .onAppear {
                         appState.initializeMainApp()
+                        
+                        // Check permissions on every launch
+                        onboardingManager.checkPermissions(with: appState)
+                        
                         // Show preferences window on launch with a slight delay to ensure it appears
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             appState.showPreferences()

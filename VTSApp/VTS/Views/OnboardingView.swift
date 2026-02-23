@@ -10,7 +10,10 @@ struct OnboardingView: View {
             ZStack {
                 // Background gradient
                 LinearGradient(
-                    gradient: Gradient(colors: [
+                    gradient: Gradient(colors: onboardingManager.needsPermissionRepair ? [
+                        Color.orange.opacity(0.1),
+                        Color.red.opacity(0.1)
+                    ] : [
                         Color.blue.opacity(0.1),
                         Color.purple.opacity(0.1)
                     ]),
@@ -25,13 +28,16 @@ struct OnboardingView: View {
                         currentStep: onboardingManager.currentStep,
                         totalSteps: OnboardingStep.allCases.count
                     )
+                    .environmentObject(onboardingManager)
                     .padding(.horizontal, 40)
                     .padding(.top, 20)
                     
                     // Main content area - scrollable
                     ScrollView(showsIndicators: false) {
                         ZStack {
-                            ForEach(OnboardingStep.allCases, id: \.self) { step in
+                            let stepsToShow = onboardingManager.needsPermissionRepair ? onboardingManager.missingSteps : OnboardingStep.allCases
+                            
+                            ForEach(stepsToShow, id: \.self) { step in
                                 if step == onboardingManager.currentStep {
                                     stepView(for: step)
                                         .transition(.asymmetric(
@@ -57,6 +63,7 @@ struct OnboardingView: View {
                             onboardingManager.completeOnboarding()
                         }
                     )
+                    .environmentObject(onboardingManager)
                     .padding(.horizontal, 40)
                     .padding(.top, 20)
                     .padding(.bottom, 30)
@@ -96,8 +103,20 @@ struct OnboardingView: View {
 }
 
 struct OnboardingHeaderView: View {
+    @EnvironmentObject var onboardingManager: OnboardingManager
     let currentStep: OnboardingStep
     let totalSteps: Int
+    
+    private var displayTotalSteps: Int {
+        onboardingManager.needsPermissionRepair ? onboardingManager.missingSteps.count : totalSteps
+    }
+    
+    private var displayCurrentIndex: Int {
+        if onboardingManager.needsPermissionRepair {
+            return (onboardingManager.missingSteps.firstIndex(of: currentStep) ?? 0) + 1
+        }
+        return currentStep.rawValue + 1
+    }
     
     var body: some View {
         VStack(spacing: 20) {
@@ -114,10 +133,10 @@ struct OnboardingHeaderView: View {
                         .foregroundColor(.blue)
                 }
                 
-                Text("VTS")
+                Text(onboardingManager.needsPermissionRepair ? "Permission Repair" : "VTS")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(.primary)
+                    .foregroundColor(onboardingManager.needsPermissionRepair ? .orange : .primary)
                 
                 Spacer()
             }
@@ -125,7 +144,7 @@ struct OnboardingHeaderView: View {
             // Progress bar
             VStack(spacing: 8) {
                 HStack {
-                    Text("Step \(currentStep.rawValue + 1) of \(totalSteps)")
+                    Text("Step \(displayCurrentIndex) of \(displayTotalSteps)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
@@ -136,8 +155,8 @@ struct OnboardingHeaderView: View {
                         .fontWeight(.medium)
                 }
                 
-                ProgressView(value: Double(currentStep.rawValue + 1), total: Double(totalSteps))
-                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                ProgressView(value: Double(displayCurrentIndex), total: Double(displayTotalSteps))
+                    .progressViewStyle(LinearProgressViewStyle(tint: onboardingManager.needsPermissionRepair ? .orange : .blue))
                     .scaleEffect(y: 2)
             }
         }
@@ -145,6 +164,7 @@ struct OnboardingHeaderView: View {
 }
 
 struct OnboardingNavigationView: View {
+    @EnvironmentObject var onboardingManager: OnboardingManager
     let currentStep: OnboardingStep
     let appState: AppState
     let onNext: () -> Void
@@ -159,11 +179,18 @@ struct OnboardingNavigationView: View {
         currentStep.proceedBlockerMessage(with: appState)
     }
     
+    private var isLastStep: Bool {
+        if onboardingManager.needsPermissionRepair {
+            return onboardingManager.missingSteps.last == currentStep
+        }
+        return currentStep == .completion
+    }
+    
     var body: some View {
         VStack(spacing: 12) {            
             HStack {
                 // Previous button
-                if currentStep != .welcome {
+                if !onboardingManager.needsPermissionRepair && currentStep != .welcome {
                     Button("Previous") {
                         onPrevious()
                     }
@@ -173,7 +200,7 @@ struct OnboardingNavigationView: View {
                 Spacer()
                 
                 // Skip button for optional steps
-                if currentStep.isOptional {
+                if currentStep.isOptional && !onboardingManager.needsPermissionRepair {
                     Button("Skip") {
                         onNext()
                     }
@@ -181,8 +208,8 @@ struct OnboardingNavigationView: View {
                 }
                 
                 // Next/Complete button
-                Button(currentStep == .completion ? "Complete Setup" : "Continue") {
-                    if currentStep == .completion {
+                Button(isLastStep ? (onboardingManager.needsPermissionRepair ? "Done" : "Complete Setup") : "Continue") {
+                    if isLastStep {
                         onComplete()
                     } else {
                         onNext()
