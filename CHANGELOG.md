@@ -5,6 +5,13 @@ All notable changes to VTS - Voice Typing Studio will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.3](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.3) (2026-02-23)
+
+### Bug Fixes
+
+* **Build Fixes**: Fixed compilation errors and warnings in OnboardingManager and LaunchAtLoginManager.
+* **UI Restoration**: Restored missing UI components in OnboardingAccessibilityStep.
+
 ## [1.5.2](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.2) (2026-02-23)
 
 ### Features

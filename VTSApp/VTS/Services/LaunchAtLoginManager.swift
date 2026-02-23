@@ -66,31 +66,30 @@ public class LaunchAtLoginManager: ObservableObject {
     }
     
     private func syncWithSystemState() {
-        do {
-            let status = SMAppService.mainApp.status
-            let systemState: Bool
-            switch status {
-            case .enabled:
-                systemState = true
-            case .requiresApproval:
-                systemState = false
-                print("⚠️ Launch at login requires user approval in System Settings.")
-            case .notFound:
-                systemState = false
-                print("⚠️ Launch at login helper not found.")
-            @unknown default:
-                systemState = false
-                print("⚠️ Unknown launch at login status: \(status)")
-            }
-            
-            if systemState != isEnabled {
-                // Sync local state with system state
-                isEnabled = systemState
-                userDefaults.set(systemState, forKey: launchAtLoginKey)
-                print("🔄 Synced launch at login state with system: \(systemState)")
-            }
-        } catch {
-            print("❌ Failed to check launch at login system state: \(error)")
+        let status = SMAppService.mainApp.status
+        let systemState: Bool
+        switch status {
+        case .enabled:
+            systemState = true
+        case .requiresApproval:
+            systemState = false
+            print("⚠️ Launch at login requires user approval in System Settings.")
+        case .notFound:
+            systemState = false
+            print("⚠️ Launch at login helper not found.")
+        case .notRegistered:
+            systemState = false
+            print("ℹ️ Launch at login not registered.")
+        @unknown default:
+            systemState = false
+            print("⚠️ Unknown launch at login status: \(status)")
+        }
+        
+        if systemState != isEnabled {
+            // Sync local state with system state
+            isEnabled = systemState
+            userDefaults.set(systemState, forKey: launchAtLoginKey)
+            print("🔄 Synced launch at login state with system: \(systemState)")
         }
     }
     

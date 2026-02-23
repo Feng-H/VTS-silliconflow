@@ -21,7 +21,7 @@ public class OnboardingManager: ObservableObject {
         isOnboardingCompleted = userDefaults.bool(forKey: onboardingCompletedKey)
     }
     
-    public func checkPermissions(with appState: AppState) {
+    func checkPermissions(with appState: AppState) {
         // Accessibility is critical for VTS to work
         let hasAccessibility = appState.restTranscriptionServiceInstance.injector.hasAccessibilityPermission
         let hasMic = appState.captureEngineService.permissionGranted

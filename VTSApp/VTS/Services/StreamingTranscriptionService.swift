@@ -416,7 +416,7 @@ public class StreamingTranscriptionService: ObservableObject {
                 return STTError.transcriptionError(message)
             case .audioStreamError(let message):
                 return STTError.audioProcessingError(message)
-            case .invalidConfiguration(let message):
+            case .invalidConfiguration(let _):
                 return STTError.invalidModel
             case .partialResultsError(let message):
                 return STTError.transcriptionError(message)

@@ -66,12 +66,12 @@ struct OnboardingAccessibilityStep: View {
                             .foregroundColor(.secondary)
                         
                         BenefitRow(
-                            icon: "1.minus.circle.fill",
+                            icon: "1.circle.fill",
                             title: "Remove from list",
                             description: "Select VTS in System Settings and click the '-' button."
                         )
                         BenefitRow(
-                            icon: "2.plus.circle.fill",
+                            icon: "2.circle.fill",
                             title: "Re-add the app",
                             description: "Click '+' and select VTS from your Applications folder."
                         )
@@ -135,5 +135,83 @@ struct OnboardingAccessibilityStep: View {
     
     private func requestAccessibilityPermission() {
         textInjector.requestAccessibilityPermission()
+    }
+}
+
+// MARK: - Supporting Views
+
+struct BenefitRow: View {
+    let icon: String
+    let title: String
+    let description: String
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(.blue)
+                .frame(width: 30)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+    }
+}
+
+struct AccessibilityPermissionCard: View {
+    let hasPermission: Bool
+    let title: String
+    let grantedMessage: String
+    let deniedMessage: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            Image(systemName: statusIcon)
+                .font(.title)
+                .foregroundColor(statusColor)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                
+                Text(statusMessage)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(statusColor.opacity(0.1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(statusColor.opacity(0.3), lineWidth: 1)
+                )
+        )
+    }
+    
+    private var statusIcon: String {
+        hasPermission ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
+    }
+    
+    private var statusColor: Color {
+        hasPermission ? .green : color
+    }
+    
+    private var statusMessage: String {
+        hasPermission ? grantedMessage : deniedMessage
     }
 }
