@@ -1,11 +1,11 @@
 # VTS - Voice Typing Studio
 
 <p align="center">
-  <img src="public/logo.png" alt="VTS Logo" width="150">
+  <img src="public/logo_new.svg" alt="VTS Logo" width="150">
   <br>
   <strong>等待已久的 macOS 开源语音输入工具！🚀</strong>
   <br>
-  <em>v1.5.0 - Typeless 风格优化 & 环境感知</em>
+  <em>v1.5.1 - 更新品牌 Logo & 图标</em>
 </p>
 
 ---

@@ -194,7 +194,7 @@ public class StatusBarController: ObservableObject {
         let hotkeyString = hotkeyManager.currentHotkeyString
 
         alert.informativeText =
-            "Version \(version)\n\nA modern macOS speech-to-text application that converts your voice to text using AI-powered transcription services from SiliconFlow and BigModel.\n\nQuick Start:\n• Press \(hotkeyString) to start/stop recording\n• Set up your API keys in Settings\n• Speak naturally and watch your words appear!"
+            "Version \(version)\n\nA high-performance, AI-driven voice typing tool for macOS.\n\nKey Features:\n• Typeless-style AI Refinement\n• App-Aware Dynamic Prompts\n• Secure Keychain Storage\n\nOptimized & Maintained by Feng-H.\nBased on the original VTS open-source project."
         alert.alertStyle = .informational
         alert.runModal()
     }

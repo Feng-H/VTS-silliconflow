@@ -5,6 +5,12 @@ All notable changes to VTS - Voice Typing Studio will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.1) (2026-02-23)
+
+### Features
+
+* **Brand Update**: Replaced app icons and logo with new custom branding to establish independent identity.
+
 ## [1.5.0](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.0) (2026-02-23)
 
 ### Features
