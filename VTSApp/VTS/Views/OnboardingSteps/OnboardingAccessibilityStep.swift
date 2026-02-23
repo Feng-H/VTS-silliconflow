@@ -5,6 +5,7 @@ struct OnboardingAccessibilityStep: View {
     @EnvironmentObject var onboardingManager: OnboardingManager
     @State private var hasPermission = false
     @State private var animateIcon = false
+    @State private var isResetting = false
     
     private var textInjector: TextInjector {
         appState.restTranscriptionServiceInstance.injector
@@ -19,98 +20,92 @@ struct OnboardingAccessibilityStep: View {
                 ZStack {
                     Circle()
                         .fill(accessibilityColor.opacity(0.2))
-                        .frame(width: 120, height: 120)
+                        .frame(width: 100, height: 100)
                     
-                    Image(systemName: "text.insert")
-                        .font(.system(size: 50))
+                    Image(systemName: "hand.tap.fill")
+                        .font(.system(size: 40))
                         .foregroundColor(accessibilityColor)
-                        .rotationEffect(.degrees(animateIcon ? 360 : 0))
-                        .animation(.easeInOut(duration: 2.0).repeatForever(autoreverses: false), value: animateIcon)
+                        .scaleEffect(animateIcon ? 1.1 : 1.0)
+                        .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: animateIcon)
                 }
                 
-                HStack {
-                    Text(onboardingManager.needsPermissionRepair ? "Repair Accessibility Access" : "Text Insertion Access")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                }
+                Text(onboardingManager.needsPermissionRepair ? "Fix Text Insertion" : "Enable Text Insertion")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
                 
                 Text(onboardingManager.needsPermissionRepair ? 
-                     "macOS often resets Accessibility permissions after updates. Please toggle VTS off and on, or remove and re-add it." :
-                     "Enable automatic text insertion to seamlessly add transcribed text into any application")
+                     "macOS security sometimes blocks VTS after an update. Let's fix it automatically." :
+                     "VTS needs permission to type text for you in other applications.")
                     .font(.title3)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 500)
             }
             
-            // Main content
+            // Simplified Action Card
             VStack(spacing: 24) {
-                // Permission status
-                AccessibilityPermissionCard(
-                    hasPermission: hasPermission,
-                    title: "Accessibility Permission",
-                    grantedMessage: "✅ Accessibility access granted! Text will be automatically inserted into applications.",
-                    deniedMessage: "⚠️ Accessibility access not enabled. Auto-insertion will not work.",
-                    color: accessibilityColor
-                )
-                
-                // Important fix instructions
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("💡 How to fix 'Granted but not working':")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("If VTS is already enabled in settings but still doesn't insert text:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                if !hasPermission || onboardingManager.needsPermissionRepair {
+                    VStack(spacing: 20) {
+                        Text("Recommended Action")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        BenefitRow(
-                            icon: "1.circle.fill",
-                            title: "Remove from list",
-                            description: "Select VTS in System Settings and click the '-' button."
-                        )
-                        BenefitRow(
-                            icon: "2.circle.fill",
-                            title: "Re-add the app",
-                            description: "Click '+' and select VTS from your Applications folder."
-                        )
-                    }
-                }
-                .padding(20)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.orange.opacity(0.05))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.orange.opacity(0.2), lineWidth: 1)
-                        )
-                )
-                
-                // Action buttons
-                VStack(spacing: 12) {
-                    if !hasPermission || onboardingManager.needsPermissionRepair {
-                        Button(action: requestAccessibilityPermission) {
-                            Label("Open Accessibility Settings", systemImage: "text.insert")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 30)
-                                .padding(.vertical, 12)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color.blue)
-                                )
+                        Button(action: {
+                            isResetting = true
+                            textInjector.resetTCCPermissions()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                isResetting = false
+                            }
+                        }) {
+                            HStack {
+                                if isResetting {
+                                    ProgressView()
+                                        .controlSize(.small)
+                                        .padding(.trailing, 5)
+                                } else {
+                                    Image(systemName: "wand.and.stars")
+                                }
+                                Text(isResetting ? "Resetting..." : "One-Click Fix & Open Settings")
+                                    .fontWeight(.bold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
                         }
                         .buttonStyle(.plain)
+                        .disabled(isResetting)
                         
-                        Text("Find 'VTS' in the list. If it's already there, toggle it OFF and ON again.")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
+                        VStack(alignment: .leading, spacing: 10) {
+                            StepInfoRow(icon: "1.circle", text: "Click the blue button above to reset the permission.")
+                            StepInfoRow(icon: "2.circle", text: "When System Settings opens, find VTS in the list.")
+                            StepInfoRow(icon: "3.circle", text: "Toggle the switch OFF and then ON again.")
+                        }
                     }
+                    .padding(24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(NSColor.controlBackgroundColor))
+                            .shadow(color: .black.opacity(0.05), radius: 10)
+                    )
+                } else {
+                    VStack(spacing: 15) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 60))
+                            .foregroundColor(.green)
+                        
+                        Text("Permission Active")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text("VTS is now ready to insert text for you.")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(40)
                 }
             }
-            .frame(maxWidth: 600)
+            .frame(maxWidth: 500)
             
             Spacer()
         }
@@ -132,86 +127,21 @@ struct OnboardingAccessibilityStep: View {
         textInjector.updatePermissionStatus()
         hasPermission = textInjector.hasAccessibilityPermission
     }
-    
-    private func requestAccessibilityPermission() {
-        textInjector.requestAccessibilityPermission()
-    }
 }
 
-// MARK: - Supporting Views
-
-struct BenefitRow: View {
+struct StepInfoRow: View {
     let icon: String
-    let title: String
-    let description: String
+    let text: String
     
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
+        HStack(alignment: .top, spacing: 10) {
             Image(systemName: icon)
-                .font(.title2)
                 .foregroundColor(.blue)
-                .frame(width: 30)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                
-                Text(description)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
+                .font(.body.bold())
+            Text(text)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
             Spacer()
         }
-    }
-}
-
-struct AccessibilityPermissionCard: View {
-    let hasPermission: Bool
-    let title: String
-    let grantedMessage: String
-    let deniedMessage: String
-    let color: Color
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: statusIcon)
-                .font(.title)
-                .foregroundColor(statusColor)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                
-                Text(statusMessage)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-        }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(statusColor.opacity(0.1))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(statusColor.opacity(0.3), lineWidth: 1)
-                )
-        )
-    }
-    
-    private var statusIcon: String {
-        hasPermission ? "checkmark.circle.fill" : "exclamationmark.triangle.fill"
-    }
-    
-    private var statusColor: Color {
-        hasPermission ? .green : color
-    }
-    
-    private var statusMessage: String {
-        hasPermission ? grantedMessage : deniedMessage
     }
 }

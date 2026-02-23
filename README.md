@@ -5,7 +5,7 @@
   <br>
   <strong>等待已久的 macOS 开源语音输入工具！🚀</strong>
   <br>
-  <em>v1.5.3 - 更新品牌 Logo & 图标</em>
+  <em>v1.5.4 - 更新品牌 Logo & 图标</em>
 </p>
 
 ---

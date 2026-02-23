@@ -211,19 +211,36 @@ public class TextInjector: ObservableObject {
         }
 
         // Request permission with system prompt (dialog)
-        // Note: This only works if the app hasn't been denied before
         let promptOptions = [
             kAXTrustedCheckOptionPrompt.takeUnretainedValue() as CFString: true as CFBoolean
         ] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(promptOptions)
 
-        // Always open System Settings to help the user
-        // This is necessary because if they previously denied it (or if Xcode build ID changed),
-        // the prompt won't appear, and they need to manually toggle/add it.
         openSystemSettings()
-
-        // Start monitoring for permission changes
         startMonitoring()
+    }
+
+    /// Resets the TCC database for this app to fix "stuck" permissions after updates
+    public func resetTCCPermissions() {
+        log("🔄 TextInjector: Attempting to reset TCC permissions via tccutil...")
+        
+        let bundleID = Bundle.main.bundleIdentifier ?? "com.vts.app"
+        let process = Process()
+        process.launchPath = "/usr/bin/tccutil"
+        process.arguments = ["reset", "Accessibility", bundleID]
+        
+        do {
+            try process.run()
+            process.waitUntilExit()
+            log("✅ TextInjector: TCC reset command executed for \(bundleID)")
+            
+            // After reset, we need to prompt again to get back into the list
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.requestAccessibilityPermission()
+            }
+        } catch {
+            log("❌ TextInjector: Failed to run tccutil: \(error.localizedDescription)")
+        }
     }
     
 
