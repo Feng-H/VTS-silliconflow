@@ -1,0 +1,8 @@
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- V型声波/光标 组合 (Simplified for small size) -->
+    <rect x="2" y="7" width="2" height="4" rx="1" fill="currentColor"/>
+    <rect x="5" y="8" width="2" height="6" rx="1" fill="currentColor"/>
+    <rect x="8" y="4" width="2" height="10" rx="1" fill="currentColor"/>
+    <rect x="11" y="8" width="2" height="6" rx="1" fill="currentColor"/>
+    <rect x="14" y="7" width="2" height="4" rx="1" fill="currentColor"/>
+</svg>
