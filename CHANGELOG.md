@@ -5,6 +5,12 @@ All notable changes to VTS - Voice Typing Studio will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.6](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.6) (2026-02-23)
+
+### Features
+
+* **Status Bar Refinement**: Redesigned status bar icons to feature only the core "Waveform" from the logo. Added distinct red (recording) and blue (processing) states.
+
 ## [1.5.5](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.5) (2026-02-23)
 
 ### Features
