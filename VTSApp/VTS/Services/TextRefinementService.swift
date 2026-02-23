@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import AppKit
 
 /// Service to handle text refinement/post-processing
 @MainActor
@@ -24,14 +25,13 @@ public class TextRefinementService: ObservableObject {
         }
     }
 
+    @Published public private(set) var isRefining: Bool = false
+
     // MARK: - Private Properties
     private let provider = OpenAICompatibleRefinementProvider()
-    private let apiKeyManager = APIKeyManager() // We'll need access to API keys
+    private let apiKeyManager = APIKeyManager()
 
-    // We'll use SiliconFlow as the default backend for refinement as it's fast and cheap
-    // ideally reusing the user's existing SiliconFlow key if available
     private var refinementConfig: ProviderConfig? {
-        // Try to get SiliconFlow key first
         if let key = try? apiKeyManager.getAPIKey(for: .siliconflow) {
             return ProviderConfig(
                 apiKey: key,
@@ -39,34 +39,70 @@ public class TextRefinementService: ObservableObject {
                 model: selectedModel
             )
         }
-
-        // Fallback to OpenAI if available
         if let key = try? apiKeyManager.getAPIKey(for: .openai) {
             return ProviderConfig(
                 apiKey: key,
                 baseUrl: "https://api.openai.com/v1/chat/completions",
-                model: "gpt-3.5-turbo" // Fallback model
+                model: "gpt-3.5-turbo"
             )
         }
-
         return nil
     }
 
     public init() {
-        // Load settings
         self.isRefinementEnabled = UserDefaults.standard.bool(forKey: "RefinementEnabled")
-
         if let savedPrompt = UserDefaults.standard.string(forKey: "RefinementSystemPrompt") {
             self.systemPrompt = savedPrompt
         }
-
         if let savedModel = UserDefaults.standard.string(forKey: "RefinementModel") {
             self.selectedModel = savedModel
         }
     }
 
+    // MARK: - Environment Awareness
+
+    private enum AppContext: String {
+        case code = "Coding/Development"
+        case chat = "Messaging/Chat"
+        case writing = "Professional Writing/Mail"
+        case general = "General"
+
+        var specializedPrompt: String {
+            switch self {
+            case .code:
+                return "The user is coding. Keep all technical terms, variable names, and code snippets exactly as they are. Fix typos only in comments or natural language parts."
+            case .chat:
+                return "The user is in a chat application. Keep the tone natural and informal. Remove only obvious hesitations and repeated words."
+            case .writing:
+                return "The user is writing a formal document or email. Use a professional tone, correct grammar, and improve flow while maintaining the original meaning."
+            case .general:
+                return "Refine the text by removing filler words and fixing minor grammar issues."
+            }
+        }
+    }
+
+    private func getActiveAppContext() -> (name: String, context: AppContext) {
+        guard let app = NSWorkspace.shared.frontmostApplication else {
+            return ("Unknown", .general)
+        }
+        
+        let bundleId = app.bundleIdentifier ?? ""
+        let appName = app.localizedName ?? "Unknown"
+        
+        if bundleId.contains("xcode") || bundleId.contains("vscode") || bundleId.contains("intellij") || bundleId.contains("terminal") || bundleId.contains("iterm") {
+            return (appName, .code)
+        } else if bundleId.contains("wechat") || bundleId.contains("slack") || bundleId.contains("discord") || bundleId.contains("whatsapp") || bundleId.contains("telegram") || bundleId.contains("messenger") {
+            return (appName, .chat)
+        } else if bundleId.contains("mail") || bundleId.contains("pages") || bundleId.contains("notes") || bundleId.contains("word") || bundleId.contains("outlook") {
+            return (appName, .writing)
+        }
+        
+        return (appName, .general)
+    }
+
+    // MARK: - Public API
+
     /// Refines the given text if enabled and configured
-    /// Returns the original text if refinement is disabled or fails
     public func refine(_ text: String) async -> String {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return text
@@ -74,13 +110,9 @@ public class TextRefinementService: ObservableObject {
 
         var processedText = text
 
-        // Step 1: Apply lightweight filler word filter (always runs if enabled)
+        // Step 1: Apply lightweight filler word filter
         if FillerWordFilter.isEnabled {
-            let beforeFilter = processedText
             processedText = FillerWordFilter.filter(processedText)
-            if processedText != beforeFilter {
-                print("🧹 TextRefinementService: Filler words removed: '\(beforeFilter)' -> '\(processedText)'")
-            }
         }
 
         // Step 2: If LLM refinement is disabled, return after filler filter
@@ -88,26 +120,39 @@ public class TextRefinementService: ObservableObject {
             return processedText
         }
 
-        guard let config = refinementConfig else {
-            print("⚠️ TextRefinementService: No API key available for refinement")
-            return text
+        // Quick Exit: If text is extremely short after filtering, don't bother LLM
+        if processedText.count < 3 {
+            return processedText
         }
 
-        print("✨ TextRefinementService: Refining text: '\(text)'")
+        guard let config = refinementConfig else {
+            print("⚠️ TextRefinementService: No API key available for refinement")
+            return processedText
+        }
+
+        isRefining = true
+        defer { isRefining = false }
+
+        let appInfo = getActiveAppContext()
+        let dynamicSystemPrompt = """
+        \(systemPrompt)
+        
+        Context: The user is currently using "\(appInfo.name)".
+        Scenario Recommendation: \(appInfo.context.specializedPrompt)
+        """
+
+        print("✨ TextRefinementService: Refining for \(appInfo.name) (\(appInfo.context.rawValue))")
 
         do {
             let refinedText = try await provider.refine(
-                text: text,
-                systemPrompt: systemPrompt,
+                text: processedText,
+                systemPrompt: dynamicSystemPrompt,
                 config: config
             )
-
-            print("✨ TextRefinementService: Refinement success: '\(refinedText)'")
             return refinedText.trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
             print("⚠️ TextRefinementService: Refinement failed: \(error)")
-            // Return original text on failure so the user still gets their dictation
-            return text
+            return processedText
         }
     }
 }

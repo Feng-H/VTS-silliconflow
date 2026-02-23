@@ -94,10 +94,16 @@ struct ContentView: View {
                 HStack {
                     Text("Status:")
                     
-                    // Show status based on priority: Recording > Processing > Idle
+                    // Show status based on priority: Recording > Refining > Processing > Idle
                     if appState.isRecording {
                         Text("🔴 Recording Audio")
                             .foregroundColor(.red)
+                    } else if appState.isRefining {
+                        Text("✨ Refining Text (AI)")
+                            .foregroundColor(.purple)
+                            .scaleEffect(isAnimating ? 1.05 : 1.0)
+                            .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: isAnimating)
+                            .onAppear { isAnimating = true }
                     } else if appState.isProcessing {
                         Text("🔵 Processing Speech")
                             .foregroundColor(.blue)

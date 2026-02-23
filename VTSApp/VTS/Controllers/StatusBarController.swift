@@ -18,6 +18,7 @@ public class StatusBarController: ObservableObject {
 
     @Published public var isRecording = false
     @Published public var isProcessing = false
+    @Published public var isRefining = false
 
     public var onToggleRecording: (() -> Void)?
     public var onShowLastTranscription: (() -> Void)?
@@ -212,6 +213,11 @@ public class StatusBarController: ObservableObject {
         updateStatusBarIcon()
     }
 
+    public func updateRefiningState(_ refining: Bool) {
+        isRefining = refining
+        updateStatusBarIcon()
+    }
+
     private func updateStatusBarIcon() {
         guard let button = statusBarItem?.button else { return }
 
@@ -220,13 +226,16 @@ public class StatusBarController: ObservableObject {
         // Clear any existing title text
         button.title = ""
 
-        // Priority: Recording > Processing > Idle
+        // Priority: Recording > Refining > Processing > Idle
         if isRecording {
             button.image = NSImage(named: StatusIconName.recording)
             button.toolTip = "VTS is recording audio - Press \(hotkey) to stop"
+        } else if isRefining {
+            button.image = NSImage(named: StatusIconName.processing)
+            button.toolTip = "VTS is refining text using AI..."
         } else if isProcessing {
             button.image = NSImage(named: StatusIconName.processing)
-            button.toolTip = "VTS is processing audio"
+            button.toolTip = "VTS is transcribing audio..."
         } else {
             button.image = NSImage(named: StatusIconName.idle)
             button.toolTip = "VTS is ready - Press \(hotkey) to start recording"
@@ -236,7 +245,7 @@ public class StatusBarController: ObservableObject {
         if let originalImage = button.image, let image = originalImage.copy() as? NSImage {
             // Use template rendering for idle state to adapt to menu bar theme,
             // but not for colored states to preserve their specific colors
-            image.isTemplate = !isRecording && !isProcessing
+            image.isTemplate = !isRecording && !isProcessing && !isRefining
             image.size = NSSize(width: 18, height: 18)
             button.image = image
         }

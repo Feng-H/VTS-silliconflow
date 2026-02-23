@@ -232,6 +232,7 @@ class AppState: ObservableObject {
     }
     @Published var isRecording = false
     @Published var isProcessing = false
+    @Published var isRefining = false
     @Published var audioLevel: Float = 0.0
     
     // Analytics tracking properties
@@ -378,10 +379,24 @@ class AppState: ObservableObject {
             }
             .store(in: &cancellables)
         
+        // Sync refining state from text refinement service to AppState
+        textRefinementService.$isRefining
+            .sink { [weak self] isRefining in
+                self?.isRefining = isRefining
+            }
+            .store(in: &cancellables)
+        
         // Observe AppState isProcessing changes to update status bar
         $isProcessing
             .sink { [weak self] isProcessing in
                 self?.statusBarController.updateProcessingState(isProcessing)
+            }
+            .store(in: &cancellables)
+        
+        // Observe AppState isRefining changes to update status bar
+        $isRefining
+            .sink { [weak self] isRefining in
+                self?.statusBarController.updateRefiningState(isRefining)
             }
             .store(in: &cancellables)
         

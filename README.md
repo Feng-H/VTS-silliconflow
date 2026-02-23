@@ -5,7 +5,7 @@
   <br>
   <strong>等待已久的 macOS 开源语音输入工具！🚀</strong>
   <br>
-  <em>v1.4.0 - 全新 Typeless 风格功能</em>
+  <em>v1.5.0 - Typeless 风格优化 & 环境感知</em>
 </p>
 
 ---

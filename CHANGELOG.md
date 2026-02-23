@@ -5,6 +5,15 @@ All notable changes to VTS - Voice Typing Studio will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/Feng-H/VTS-silliconflow/releases/tag/v1.5.0) (2026-02-23)
+
+### Features
+
+* **Typeless-style Refinement**: Enhanced local filler word filtering and repeated word detection.
+* **Environment Awareness**: Dynamic AI prompts based on the active application (Code, Chat, Writing).
+* **Improved UX Feedback**: New "Refining" state in menu bar and UI with specific status animations.
+* **Optimization**: Quick-exit logic for short transcriptions to reduce AI latency.
+
 ## [1.1.2](https://github.com/j05u3/VTS/compare/v1.1.1...v1.1.2) (2025-10-05)
 
 
