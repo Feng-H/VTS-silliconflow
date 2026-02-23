@@ -144,3 +144,22 @@ temp/
 local.json
 local.plist
 
+# --- Custom Additions for VTS ---
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local development & AI helpers
+.claude/settings.local.json
+.claude/agents/local-*
+*.local.md
+
+# Extra Build Artifacts
+*.app/
+*.pkg
+
+# Backup files
+*.bak
+*.old
+
